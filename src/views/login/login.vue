@@ -1,9 +1,17 @@
 <template>
     <div id="login">
         <van-form ref="loginForm" validate-first>
-            <van-field v-model="loginForm.phone" name="账号" label="账号" placeholder="请输入手机号" :rules="[{ required: true }]" />
-            <van-field v-model="loginForm.password" type="password" name="密码" label="密码" placeholder="请输入密码"
+            <van-field center required v-model="loginForm.phone" name="账号" label="账号" placeholder="请输入手机号"
                 :rules="[{ required: true }]" />
+            <van-field center required v-model="loginForm.password" type="password" name="密码" label="密码" placeholder="请输入密码"
+                :rules="[{ required: true }]" />
+            <!-- 验证码 -->
+            <van-field center v-model="loginForm.verifyCode" name="验证码" label="验证码" placeholder="请输入验证码"
+                :rules="[{ required: true }, { validator, message: '验证码错误' }]">
+                <template #button>
+                    <div v-html="verify.code" @click="reqVerifyCode"></div>
+                </template>
+            </van-field>
             <div class="loginBtn">
                 <van-button round block type="info" native-type="button" @click="login">登录</van-button>
             </div>
@@ -15,8 +23,12 @@
 <script>
 // 引入API
 import { userLoginAPI } from '@/api/user';
+import { getVerifyCodeAPI } from '@/api/veriCode';
+// 引入vant组件
 import { Notify } from 'vant';
 import { Toast } from 'vant';
+// 引入vuex
+import { mapMutations } from 'vuex';
 
 export default {
     name: 'Login',
@@ -26,10 +38,31 @@ export default {
             loginForm: {
                 phone: '13412341234',
                 password: '123456',
+                verifyCode: '',
+            },
+            // 请求获得的验证码
+            verify: {
+                text: '',
+                code: '',
             },
         };
     },
+    computed: {
+    },
     methods: {
+        ...mapMutations(['addUserInfo']),
+        // 请求验证码
+        async reqVerifyCode() {
+            let [data, err] = await getVerifyCodeAPI();
+            if (err) return;
+            this.verify.text = data.data.text;
+            this.verify.code = data.data.data;
+        },
+        // 表单校验规则
+        validator() {
+            return this.verify.text.toLowerCase() === this.loginForm.verifyCode.toLocaleLowerCase();
+        },
+        // 去注册
         switchMode() {
             // 跳转到注册界面
             this.$router.replace({ name: 'Register' });
@@ -42,11 +75,20 @@ export default {
                 let [data, err] = await userLoginAPI(this.loginForm);
                 if (err) return;
                 Toast.success('登录成功');
-                // 跳转至首页
+                // console.log(data.data.result);
+                // 保存用户信息到vuex和localStorage
+                this.addUserInfo(data.data.result);
+                // 跳转
                 this.$router.replace({ name: 'Home' });
             }).catch(err => {
                 // 验证失败
                 let msg = err[0].message || '请输入' + err[0].name;
+                if (msg === '验证码错误') {
+                    // 请求一个新的验证码
+                    this.reqVerifyCode();
+                    // 清空验证码输入框
+                    this.loginForm.verifyCode = '';
+                }
                 Notify({
                     message: msg,
                     duration: 2000,
@@ -55,6 +97,9 @@ export default {
             });
         },
     },
+    async mounted() {
+        this.reqVerifyCode();
+    },
 };
 </script>
 
@@ -62,6 +107,7 @@ export default {
 #login {
     padding: vw(20) 0;
 
+    // 登录按钮
     .loginBtn {
         margin: vw(30) 0;
     }

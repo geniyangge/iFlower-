@@ -9,6 +9,7 @@ import { Cell, CellGroup } from 'vant';
 import { Grid, GridItem } from 'vant';
 import { Divider } from 'vant';
 import { Form } from 'vant';
+import { Image as VanImage } from 'vant';
 // import { Toast } from 'vant';
 
 // 使用vant插件
@@ -20,4 +21,5 @@ Vue.use(Cell).use(CellGroup);
 Vue.use(Grid).use(GridItem);
 Vue.use(Divider);
 Vue.use(Form);
+Vue.use(VanImage);
 // Vue.use(Toast);

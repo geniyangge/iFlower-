@@ -1,13 +1,13 @@
 <template>
     <div id="register">
         <van-form ref="registerForm" validate-first>
-            <van-field v-model="registerForm.phone" name="手机号" label="手机号" placeholder="请输入手机号"
+            <van-field center required v-model="registerForm.phone" name="手机号" label="手机号" placeholder="请输入手机号"
                 :rules="[{ required: true }]" />
-            <van-field v-model="registerForm.name" name="用户名" label="用户名" placeholder="请输入用户名"
+            <van-field center required v-model="registerForm.name" name="用户名" label="用户名" placeholder="请输入用户名"
                 :rules="[{ required: true }]" />
-            <van-field v-model="registerForm.password" name="密码" label="密码" placeholder="请输入密码"
+            <van-field center required v-model="registerForm.password" name="密码" label="密码" placeholder="请输入密码"
                 :rules="[{ required: true }]" />
-            <van-field v-model="registerForm.againPassword" name="确认密码" label="确认密码" placeholder="请再次输入密码"
+            <van-field center required v-model="registerForm.againPassword" name="确认密码" label="确认密码" placeholder="请再次输入密码"
                 :rules="[{ required: true }, { validator, message: '两次输入的密码不一致' }]" />
             <div class="loginBtn">
                 <van-button round block type="info" native-type="button" @click="register">注册</van-button>

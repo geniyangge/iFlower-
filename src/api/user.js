@@ -36,7 +36,7 @@ export async function userLoginAPI(data) {
  * 更新用户信息
  *  - put请求
  */
-export async function updateUserInfoAPI(data) {
+export async function updateUserInfoAPI(data, headers) {
     if (!data.id) return Notify({
         message: '请先登录',
         duration: 2000,
@@ -47,5 +47,6 @@ export async function updateUserInfoAPI(data) {
         method: 'put',
         url: '/user/' + id,
         data,
+        headers,
     });
 }
