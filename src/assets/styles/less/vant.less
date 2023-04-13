@@ -1,0 +1,8 @@
+@vwUnit: 3.75;
+
+.pxToVw(@px){
+    result:(@px / @vwUnit) * 1vw;
+}
+
+// 底部tabbar高度
+@tabbar-height: .pxToVw(50)[result];

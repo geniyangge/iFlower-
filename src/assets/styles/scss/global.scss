@@ -1,0 +1,4 @@
+// 该文件用于存放全局scss样式
+@function vw($px) {
+    @return ($px / 375) * 100 + vw;
+}
