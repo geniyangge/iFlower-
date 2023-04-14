@@ -10,7 +10,7 @@ const errNetworkStatus = {
 
 export const handlerNetworkErr = errInfo => {
     let { status, msg } = errInfo;
-    console.log(status, msg);
+    console.log('handlerAxios.js', status, msg);
     Notify({
         message: errNetworkStatus[status] || msg || '未知的错误',
         duration: 2000,

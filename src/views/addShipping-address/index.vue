@@ -1,5 +1,5 @@
 <template>
-    <!-- 新增收货地址 -->
+    <!-- 收货地址 -->
     <div id="addAddress">
         <!-- 标题栏 -->
         <div class="title">
