@@ -1,6 +1,7 @@
 <template>
     <div id="login">
-        <van-form ref="loginForm" validate-first>
+        <!-- 登录表单 -->
+        <van-form ref="loginForm" validate-first :show-error="false">
             <van-field center required v-model="loginForm.phone" name="账号" label="账号" placeholder="请输入手机号"
                 :rules="[{ required: true }]" />
             <van-field center required v-model="loginForm.password" type="password" name="密码" label="密码" placeholder="请输入密码"
@@ -15,7 +16,7 @@
             <div class="loginBtn">
                 <van-button round block type="info" native-type="button" @click="login">登录</van-button>
             </div>
-            <h3 @click="switchMode">用户注册</h3>
+            <h3 @click="switchMode">没有账号？前往注册</h3>
         </van-form>
     </div>
 </template>
@@ -55,8 +56,8 @@ export default {
         async reqVerifyCode() {
             let [data, err] = await getVerifyCodeAPI();
             if (err) return;
-            this.verify.text = data.data.text;
-            this.verify.code = data.data.data;
+            this.verify.text = data.text;
+            this.verify.code = data.data;
         },
         // 表单校验规则
         validator() {
@@ -75,9 +76,9 @@ export default {
                 let [data, err] = await userLoginAPI(this.loginForm);
                 if (err) return;
                 Toast.success('登录成功');
-                // console.log(data.data.result);
+                console.log(data.result);
                 // 保存用户信息到vuex和localStorage
-                this.addUserInfo(data.data.result);
+                this.addUserInfo(data.result);
                 // 跳转
                 this.$router.replace({ name: 'Home' });
             }).catch(err => {
@@ -89,6 +90,7 @@ export default {
                     // 清空验证码输入框
                     this.loginForm.verifyCode = '';
                 }
+                // 提示错误信息
                 Notify({
                     message: msg,
                     duration: 2000,
@@ -98,6 +100,7 @@ export default {
         },
     },
     async mounted() {
+        // 获取验证码
         this.reqVerifyCode();
     },
 };

@@ -1,4 +1,15 @@
 // 该文件用于存放全局scss样式
 @function vw($px) {
-    @return ($px / 375) * 100 + vw;
+    @return ($px / 375) * 100+vw;
+}
+
+// 主题色
+$theme-color: #884e22;
+
+// 面板背景色
+$bgc: #e9ecf0;
+
+@mixin funpage() {
+    min-height: 100vh;
+    background-color: $bgc;
 }

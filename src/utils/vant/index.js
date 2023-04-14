@@ -10,6 +10,10 @@ import { Grid, GridItem } from 'vant';
 import { Divider } from 'vant';
 import { Form } from 'vant';
 import { Image as VanImage } from 'vant';
+import { AddressEdit } from 'vant';
+// import { Popup } from 'vant';
+// import { Area } from 'vant';
+// import { Checkbox, CheckboxGroup } from 'vant';
 // import { Toast } from 'vant';
 
 // 使用vant插件
@@ -22,4 +26,8 @@ Vue.use(Grid).use(GridItem);
 Vue.use(Divider);
 Vue.use(Form);
 Vue.use(VanImage);
+Vue.use(AddressEdit);
+// Vue.use(Popup);
+// Vue.use(Area);
+// Vue.use(Checkbox).use(CheckboxGroup);
 // Vue.use(Toast);

@@ -7,6 +7,7 @@ import iflower from '@/views/iflower';
 Vue.use(VueRouter);
 
 const routes = [
+  // 主页
   {
     path: '/',
     component: iflower,
@@ -55,6 +56,22 @@ const routes = [
         },
       }
     ],
+  },
+  // 我的订单
+  {
+    path: '/order',
+    component: () => import('@/views/personal-order/index.vue'),
+  },
+  // 收货地址
+  {
+    path: '/address',
+    component: () => import('@/views/shipping-address/index.vue'),
+  },
+  // 新增收货地址
+  {
+    path: '/newAddress',
+    name:'NewAddress',
+    component: () => import('@/views/addShipping-address/index.vue'),
   }
 ];
 

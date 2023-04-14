@@ -1,6 +1,7 @@
 <template>
     <div id="register">
-        <van-form ref="registerForm" validate-first>
+        <!-- 注册表单 -->
+        <van-form ref="registerForm" validate-first :show-error="false">
             <van-field center required v-model="registerForm.phone" name="手机号" label="手机号" placeholder="请输入手机号"
                 :rules="[{ required: true }]" />
             <van-field center required v-model="registerForm.name" name="用户名" label="用户名" placeholder="请输入用户名"
@@ -12,7 +13,7 @@
             <div class="loginBtn">
                 <van-button round block type="info" native-type="button" @click="register">注册</van-button>
             </div>
-            <h3 @click="switchMode">密码登录</h3>
+            <h3 @click="switchMode">已有账号，立即登录</h3>
         </van-form>
     </div>
 </template>
@@ -53,7 +54,7 @@ export default {
                 let [data, err] = await userRegisterAPI(this.registerForm);
                 if (err) return;
                 // 注册成功
-                Toast.success("注册成功");
+                Toast.success(data.msg);
             }).catch(err => {
                 // 验证失败
                 let msg = err[0].message || '请输入' + err[0].name;

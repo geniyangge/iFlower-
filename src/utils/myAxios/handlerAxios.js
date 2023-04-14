@@ -4,8 +4,8 @@
 import { Notify } from 'vant';
 
 const errNetworkStatus = {
-    409: '该手机号码已注册',
     400: '参数phone格式不对或者缺失',
+    409: '该手机号码已注册',
 };
 
 export const handlerNetworkErr = errInfo => {

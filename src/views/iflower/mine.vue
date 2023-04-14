@@ -28,7 +28,7 @@
             <!-- 订单 -->
             <div class="order">
                 <van-cell-group inset>
-                    <van-cell title="我的订单" value="全部订单" is-link />
+                    <van-cell title="我的订单" value="全部订单" is-link to="/order" />
                     <van-grid :border="false" clickable>
                         <van-grid-item icon="todo-list-o" text="待付款" />
                         <van-grid-item icon="logistics" text="派送中" />
@@ -42,7 +42,7 @@
             <div class="other">
                 <van-cell-group inset>
                     <van-cell icon="balance-pay" title="优惠券" is-link />
-                    <van-cell icon="guide-o" title="收货地址" is-link />
+                    <van-cell icon="guide-o" title="收货地址" is-link to="/address" />
                     <van-cell icon="setting-o" title="设置" is-link />
                 </van-cell-group>
             </div>
@@ -87,7 +87,7 @@ export default {
         },
     },
     mounted() {
-        console.log(this.userInfo);
+        // console.log(this.userInfo);
     }
 };
 </script>
@@ -104,12 +104,14 @@ export default {
 }
 
 #mine {
+    @include funpage();
+
     header {}
 
     main {
         width: 100%;
-        height: 100vh;
-        background: #f7f7f7 url('@/assets/images/mine/mine_bgi.webp') no-repeat center top/100vw auto;
+        background: url('@/assets/images/mine/mine_bgi.webp') no-repeat center top/100vw auto;
+
 
         // 用户简要信息
         .user {

@@ -1,11 +1,13 @@
 <template>
     <div id="iflower">
         <!-- 顶部导航栏 -->
-        <header></header>
+        <!-- <header></header> -->
 
         <!-- 内容 -->
         <main>
-            <router-view />
+            <transition name="van-fade" mode="out-in">
+                <router-view />
+            </transition>
         </main>
 
         <!-- 底部 -->
@@ -33,5 +35,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#iflower {}
+#iflower {
+    main {
+        // 底部留白，不让底部tabbar遮挡
+        padding-bottom: vw(50);
+    }
+}
 </style>
