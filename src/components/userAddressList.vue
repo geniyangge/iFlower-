@@ -9,7 +9,8 @@
         <!-- 默认地址 -->
         <template v-if="defaultAddress" v-cloak>
             <van-swipe-cell>
-                <van-cell clickable style="margin-top: 1.3333vw;">
+                <van-cell clickable is-link :to="{ name: 'EditAddress', params: { item: defaultAddress, isDefault: true } }"
+                    style="margin-top: 1.3333vw;">
                     <!-- 地址卡片 -->
                     <div class="addressCard">
                         <!-- 左侧信息 -->
@@ -49,7 +50,8 @@
         <!-- 收货地址列表 -->
         <template v-for="addressInfo in userAddressList" v-cloak>
             <van-swipe-cell>
-                <van-cell clickable style="margin-top: 1.3333vw;">
+                <van-cell clickable is-link :to="{ name: 'EditAddress', params: { item: addressInfo } }"
+                    style="margin-top: 1.3333vw;">
                     <!-- 地址卡片 -->
                     <div class="addressCard">
                         <!-- 左侧信息 -->

@@ -91,10 +91,8 @@ export async function deleteUserAddresssAPI(id) {
  * 更新地址信息
  *  - put请求
  */
-export async function updateUserAddressAPI(data) {
-    if (!data.id) return;
-    let id = data.id;
-    delete data.id;
+export async function updateUserAddressAPI(id, data) {
+    if (!id) return;
     // 请求头携带登录令牌
     const headers = {
         // 登录令牌
@@ -103,6 +101,7 @@ export async function updateUserAddressAPI(data) {
     return await myAxios({
         method: 'put',
         url: '/address/' + id,
+        data,
         headers,
     });
 }
@@ -114,9 +113,7 @@ export async function getUserAddressList() {
     let [data2, err2] = await getUserAddressAPI();
     if (err1 || err2) return;
     let defaultAddress = data1.result || null;
-    console.log(defaultAddress);
     let userAddressList = data2.result.filter(address => address.default_set !== '1');
-    console.log(userAddressList);
     // 保存到vuex 和 localStorage
     store.commit('saveUserAddressInfo', { defaultAddress, userAddressList });
 }

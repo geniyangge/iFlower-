@@ -5,9 +5,9 @@
 
         <!-- 内容 -->
         <main>
-            <transition name="van-fade" mode="out-in">
-                <router-view />
-            </transition>
+            <!-- <transition name="van-fade" mode="out-in"> -->
+            <router-view />
+            <!-- </transition> -->
         </main>
 
         <!-- 底部 -->

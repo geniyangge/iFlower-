@@ -95,7 +95,13 @@ const routes = [
       // 需要登录
       required: true,
     },
-  }
+  },
+  // 编辑收货地址
+  {
+    path: '/editAddress',
+    name: 'EditAddress',
+    component: () => import('@/views/editShipping-address/index.vue'),
+  },
 ];
 
 const router = new VueRouter({
