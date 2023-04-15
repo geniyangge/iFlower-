@@ -3,7 +3,7 @@
     <div id="address">
         <!-- 标题栏 -->
         <div class="title">
-            <van-nav-bar title="收货地址" left-arrow @click-left="$router.back()" :border="false" />
+            <van-nav-bar title="收货地址" left-arrow @click-left="$router.replace('/mine')" :border="false" />
         </div>
 
         <!-- 用户收货地址列表 -->
@@ -27,9 +27,11 @@
 // 引入用户收货地址组件
 import UserAddressList from '@/components/userAddressList';
 // 引入地址模块API
-import { getUserAddressAPI, getDefaultAddressAPI, deleteUserAddresssAPI } from '@/api/address.js';
+import { getUserAddressList, deleteUserAddresssAPI } from '@/api/address.js';
 // 引入vant组件
 import { Dialog, Toast } from 'vant';
+// 引入vuex
+import { mapState } from 'vuex';
 
 export default {
     name: 'Address',
@@ -38,27 +40,18 @@ export default {
     },
     data() {
         return {
-            // 用户收货地址列表(除去默认收货地址)
-            userAddressList: [],
-            // 默认收货地址
-            defaultAddress: {},
         };
     },
-    async created() {
-        // 获取用户收货地址列表 和 默认收货地址
-        this.getUserAddressList();
+    computed: {
+        ...mapState(['userAddressList', 'defaultAddress']),
+    },
+    created() {
+        // 如果没有收货地址数据，请求一次
+        if (this.userAddressList === null || this.defaultAddress === null) {
+            getUserAddressList();
+        }
     },
     methods: {
-        //  获取用户收货地址列表 和 默认收货地址
-        async getUserAddressList() {
-            let [data1, err1] = await getDefaultAddressAPI();
-            let [data2, err2] = await getUserAddressAPI();
-            if (err1 || err2) return;
-            // console.log(data1, data2);
-            this.defaultAddress = data1.result;
-            this.userAddressList = data2.result.filter(address => address.default_set !== '1');
-            // console.log(this.defaultAddress);
-        },
         // 删除用户收货地址信息
         async deleteUserAddresss(id) {
             let [data, err] = await deleteUserAddresssAPI(id);
@@ -75,7 +68,8 @@ export default {
                 .then(async () => {
                     // 确定
                     await this.deleteUserAddresss(id);
-                    await this.getUserAddressList();
+                    // 重新获取地址列表
+                    await getUserAddressList();
                 })
                 .catch(() => {
                     // 取消

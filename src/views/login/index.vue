@@ -4,7 +4,7 @@
         <header>
             <!-- 标题 -->
             <div class="title">
-                <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="" :border="false" />
+                <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="$router.back()" :border="false" />
             </div>
         </header>
 

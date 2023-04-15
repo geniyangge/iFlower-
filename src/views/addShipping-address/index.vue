@@ -7,9 +7,8 @@
         </div>
 
         <main>
-            <van-address-edit :area-list="areaList" show-postal show-delete show-set-default
-                :area-columns-placeholder="['请选择', '请选择', '请选择']" @save="onSave" @delete="onDelete"
-                @change-detail="onChangeDetail" />
+            <van-address-edit :area-list="areaList" show-postal show-set-default
+                :area-columns-placeholder="['请选择', '请选择', '请选择']" @save="onSave" />
         </main>
     </div>
 </template>
@@ -19,6 +18,11 @@
 import { areaList } from '@vant/area-data';
 // 引入vant组件
 import { Toast } from 'vant';
+// 引入vuex
+import { mapState } from 'vuex';
+// 引入API
+import { addAddressAPI, getUserAddressList, setDefaultAddressAPI } from '@/api/address';
+
 export default {
     name: 'AddAddress',
     data() {
@@ -34,32 +38,62 @@ export default {
             },
             // 地区列表
             areaList,
-            // 是否作为默认地址
-            isDefaultAddress: false,
         };
     },
+    computed: {
+        ...mapState(['cityList']),
+    },
     methods: {
+        // 地区转码函数
+        EncodeArea(options) {
+            let { province, city, county } = options;
+            // 剪切前两个字
+            province = province.slice(0, 2);
+            city = city.slice(0, 2);
+            let provinceObj, cityObj, targetCounty;
+            let result = '';
+            // 依次遍历，先找省，再找市，最后确定区
+            provinceObj = this.cityList.find(p => {
+                return p.cityname.includes(province);
+            });
+            result += provinceObj.id + ',';
+
+            cityObj = provinceObj.children.find(c => {
+                return c.cityname.includes(city);
+            });
+            result += cityObj.id + ',';
+
+            targetCounty = cityObj.children.find(t => {
+                return t.cityname.includes(county);
+            });
+            result += targetCounty.id;
+            // 返回结果，字符串，如"2,50,500"
+            return result;
+        },
         // 保存收货信息
-        onSave(content) {
-            console.log(content);
-            Toast.success('保存成功');
-        },
-        // 删除收货信息
-        onDelete() {
-            Toast.success('删除成功');
-        },
-        // 修改详细地址信息
-        onChangeDetail(val) {
-            if (val) {
-                this.searchResult = [
-                    {
-                        name: '黄龙万科中心',
-                        address: '杭州市西湖区',
-                    },
-                ];
-            } else {
-                this.searchResult = [];
+        async onSave(content) {
+            // console.log(content);
+            this.addressInfoForm.name = content.name;
+            this.addressInfoForm.phone = content.tel;
+            this.addressInfoForm.area = this.EncodeArea(content);
+            this.addressInfoForm.area_name = content.province + content.city + content.county;
+            this.addressInfoForm.desc = content.addressDetail;
+            this.addressInfoForm.post_code = content.postalCode;
+            // 请求添加数据
+            let [data, err] = await addAddressAPI(this.addressInfoForm);
+            if (err) return;
+            // console.log(data.result.id);
+            // 提示
+            Toast.success(data.msg);
+            // 如果设置为默认收货地址
+            if (content.isDefault) {
+                // 设置成默认收货地址
+                await setDefaultAddressAPI(data.result.id);
             }
+            // 重新请求收货列表
+            await getUserAddressList();
+            // 跳转到收货地址列表页
+            this.$router.replace('/address');
         },
     },
 };
@@ -71,8 +105,9 @@ export default {
 
     // 保存按钮
     ::v-deep .van-button--danger {
-        background-color: #ee0a24;
-        border: #ee0a24;
+        height: vw(38);
+        background-color: $theme-color;
+        border: $theme-color;
         color: #fff;
     }
 

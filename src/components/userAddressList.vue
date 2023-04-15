@@ -9,36 +9,39 @@
         <!-- 默认地址 -->
         <template v-if="defaultAddress" v-cloak>
             <van-swipe-cell>
-                <!-- 地址卡片 -->
-                <div class="addressCard">
-                    <!-- 左侧信息 -->
-                    <div class="info">
-                        <h2>
-                            <div class="text">
-                                <span class="name">{{ defaultAddress.name }}</span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                <span class="phone">{{ defaultAddress.phone }}</span>
-                                &nbsp;&nbsp;
-                            </div>
-                            <span class="default">默认</span>
-                        </h2>
-                        <p>
-                            <span class="area">{{ defaultAddress.area_name }}</span>
-                            &nbsp;
-                            <span class="desc">{{ defaultAddress.desc }}</span>
-                        </p>
+                <van-cell clickable style="margin-top: 1.3333vw;">
+                    <!-- 地址卡片 -->
+                    <div class="addressCard">
+                        <!-- 左侧信息 -->
+                        <div class="info">
+                            <h2>
+                                <div class="text">
+                                    <span class="name">{{ defaultAddress.name }}</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span class="phone">{{ defaultAddress.phone }}</span>
+                                    &nbsp;&nbsp;
+                                </div>
+                                <span class="default">默认</span>
+                            </h2>
+                            <p>
+                                <span class="area">{{ defaultAddress.area_name }}</span>
+                                &nbsp;
+                                <span class="desc">{{ defaultAddress.desc }}</span>
+                            </p>
+                        </div>
+                        <!-- 右侧图标 -->
+                        <div class="icon">
+                            <i class="iconfont icon-bianji"></i>
+                        </div>
                     </div>
-                    <!-- 右侧图标 -->
-                    <div class="icon">
-                        <i class="iconfont icon-bianji"></i>
-                    </div>
-                </div>
+                </van-cell>
                 <template #right>
                     <!-- 这里使用插槽做封装 向父组件传递两个值 -->
                     <!-- row 选中元素 -->
                     <!-- id 选中元素的ID -->
                     <slot name="slot" :row="defaultAddress" :id="defaultAddress.id"></slot>
                 </template>
+
             </van-swipe-cell>
         </template>
 
@@ -46,28 +49,30 @@
         <!-- 收货地址列表 -->
         <template v-for="addressInfo in userAddressList" v-cloak>
             <van-swipe-cell>
-                <!-- 地址卡片 -->
-                <div class="addressCard">
-                    <!-- 左侧信息 -->
-                    <div class="info">
-                        <h2>
-                            <div class="text">
-                                <span class="name">{{ addressInfo.name }}</span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                <span class="phone">{{ addressInfo.phone }}</span>
-                            </div>
-                        </h2>
-                        <p>
-                            <span class="area">{{ addressInfo.area_name }}</span>
-                            &nbsp;
-                            <span class="desc">{{ addressInfo.desc }}</span>
-                        </p>
+                <van-cell clickable style="margin-top: 1.3333vw;">
+                    <!-- 地址卡片 -->
+                    <div class="addressCard">
+                        <!-- 左侧信息 -->
+                        <div class="info">
+                            <h2>
+                                <div class="text">
+                                    <span class="name">{{ addressInfo.name }}</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span class="phone">{{ addressInfo.phone }}</span>
+                                </div>
+                            </h2>
+                            <p>
+                                <span class="area">{{ addressInfo.area_name }}</span>
+                                &nbsp;
+                                <span class="desc">{{ addressInfo.desc }}</span>
+                            </p>
+                        </div>
+                        <!-- 右侧图标 -->
+                        <div class="icon">
+                            <i class="iconfont icon-bianji"></i>
+                        </div>
                     </div>
-                    <!-- 右侧图标 -->
-                    <div class="icon">
-                        <i class="iconfont icon-bianji"></i>
-                    </div>
-                </div>
+                </van-cell>
                 <template #right>
                     <!-- 这里使用插槽做封装 -->
                     <slot name="slot" :row="addressInfo" :id="addressInfo.id"></slot>
@@ -112,10 +117,14 @@ export default {
         height: 100%;
     }
 
+    // 单元格内边距
+    .van-cell {
+        padding: 0;
+    }
+
     // 地址卡片
     .addressCard {
-        background-color: #fff;
-        margin-top: vw(5);
+        // background-color: #fff;
         padding: vw(15);
         display: flex;
         justify-content: space-between;

@@ -25,11 +25,13 @@
 // 引入API
 import { userLoginAPI } from '@/api/user';
 import { getVerifyCodeAPI } from '@/api/veriCode';
+import { getUserAddressList } from '@/api/address';
+import { getCityListAPI } from '@/api/city';
 // 引入vant组件
 import { Notify } from 'vant';
 import { Toast } from 'vant';
 // 引入vuex
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 
 export default {
     name: 'Login',
@@ -49,9 +51,10 @@ export default {
         };
     },
     computed: {
+        ...mapState(['cityList']),
     },
     methods: {
-        ...mapMutations(['addUserInfo']),
+        ...mapMutations(['addUserInfo', 'saveCityList']),
         // 请求验证码
         async reqVerifyCode() {
             let [data, err] = await getVerifyCodeAPI();
@@ -75,12 +78,17 @@ export default {
                 // 验证成功,发送请求
                 let [data, err] = await userLoginAPI(this.loginForm);
                 if (err) return;
+                // 登录成功
                 Toast.success('登录成功');
-                console.log(data.result);
                 // 保存用户信息到vuex和localStorage
-                this.addUserInfo(data.result);
+                await this.addUserInfo(data.result);
+                // 请求用户收货地址信息
+                await getUserAddressList();
                 // 跳转
-                this.$router.replace({ name: 'Home' });
+                let toPath = this.$route.query.toPath;
+                this.$router.replace(toPath ? decodeURI(toPath) : '/');
+                // 获取全国城市列表
+                this.getCityList();
             }).catch(err => {
                 // 验证失败
                 let msg = err[0].message || '请输入' + err[0].name;
@@ -97,6 +105,16 @@ export default {
                     type: 'warning',
                 });
             });
+        },
+        // 获取全国城市信息
+        async getCityList() {
+            // 如果cityList已存在，则跳出
+            if (this.cityList) return;
+            // 不存在，发起请求
+            let [data, err] = await getCityListAPI();
+            if (err) return;
+            // 保存cityList
+            this.saveCityList(data.result);
         },
     },
     async mounted() {

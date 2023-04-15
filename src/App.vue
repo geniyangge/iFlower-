@@ -3,6 +3,7 @@
     <transition name="van-fade" mode="out-in">
       <router-view />
     </transition>
+
   </div>
 </template>
 
