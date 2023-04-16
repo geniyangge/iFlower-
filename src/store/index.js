@@ -14,6 +14,10 @@ export default new Vuex.Store({
     defaultAddress: JSON.parse(localStorage.getItem('defaultAddress') || null),
     // 全国城市列表
     cityList: JSON.parse(localStorage.getItem('cityList') || null),
+    // 首页轮播图列表
+    swiperList: JSON.parse(localStorage.getItem('swiperList') || null),
+    // 首页分类及其商品信息
+    sortGoodsList: JSON.parse(localStorage.getItem('sortGoodsList') || null),
   },
   getters: {
   },
@@ -47,6 +51,16 @@ export default new Vuex.Store({
     saveCityList(state, cityList) {
       state.cityList = cityList;
       localStorage.setItem('cityList', JSON.stringify(cityList));
+    },
+    // 保存首页轮播图列表
+    SaveSwiperList(state, swiperList) {
+      state.swiperList = swiperList;
+      localStorage.setItem('swiperList', JSON.stringify(swiperList));
+    },
+    // 首页分类及其商品信息
+    SaveSortGoodsList(state, sortGoodsList) {
+      state.sortGoodsList = sortGoodsList;
+      localStorage.setItem('sortGoodsList', JSON.stringify(sortGoodsList));
     },
   },
   actions: {

@@ -6,10 +6,8 @@
 // 主题色
 $theme-color: #884e22;
 
-// 面板背景色
-$bgc: #e9ecf0;
 
-@mixin funpage() {
+@mixin funpage($bgc: #e9ecf0) {
     min-height: 100vh;
     background-color: $bgc;
 }

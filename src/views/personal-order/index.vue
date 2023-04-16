@@ -27,8 +27,7 @@ export default {
 
 <style lang="scss" scoped>
 #order {
-    min-height: 100vh;
-    background-color: $bgc;
+    @include funpage();
 
     .title {
 
