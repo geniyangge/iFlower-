@@ -30,7 +30,7 @@ export default {
         return {
             active: 0,
         };
-    }
+    },
 };
 </script>
 

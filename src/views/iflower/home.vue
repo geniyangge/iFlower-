@@ -93,7 +93,7 @@
                     <div class="part">
                         <!-- 板块标题 -->
                         <div class="pratTitle">
-                            <h2>{{sort.title}}</h2>
+                            <h2>{{ sort.title }}</h2>
                             <!-- 下划线 -->
                             <span></span>
                         </div>
@@ -108,14 +108,20 @@
                                     </div>
                                     <!-- 商品描述 -->
                                     <div class="productDesc">
-                                        <h2>{{good.name}}</h2>
+                                        <h2>{{ good.name }}</h2>
                                         <div class="productText">
-                                            <p class="price">￥{{good.price}}</p>
-                                            <p class="sales">销量{{good.sold_num}}笔</p>
+                                            <p class="price">￥{{ good.price }}</p>
+                                            <p class="sales">销量{{ good.sold_num }}笔</p>
                                         </div>
                                     </div>
                                 </div>
                             </template>
+                        </div>
+                        <!-- 查看更多 -->
+                        <div class="lookMore">
+                            <div class="more" @click="toGoodDesc">
+                                <h2>查看更多</h2>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -124,7 +130,10 @@
 
         <!-- 底部信息 -->
         <footer>
-
+            <div class="ICP">
+                <p>Copyright&copy;2023 geniyangge</p>
+                <a href="https://beian.miit.gov.cn/">粤ICP备2023023815号</a>
+            </div>
         </footer>
     </div>
 </template>
@@ -201,16 +210,23 @@ export default {
                     img: require('@/assets/images/home/7.webp'),
                 },
             ],
+            // 需要渲染的分类商品列表
+            goodsList: [],
         };
     },
     computed: {
-        ...mapState(['swiperList','sortGoodsList']),
+        ...mapState(['swiperList', 'sortGoodsList']),
     },
     methods: {
         // 点击标题栏的搜索图标
         onClickLeft() {
-
-        }
+            // 跳转到搜索页
+            this.$router.push('/search');
+        },
+        // 点击查看更多，跳转到商品详情页
+        toGoodDesc() {
+            console.log('iflower/home.vue', '功能开发中~');
+        },
     },
     async created() {
         if (this.swiperList === null) {
@@ -218,11 +234,17 @@ export default {
             // 请求轮播图图片数据
             await saveSwiperList();
         }
-        if(this.sortGoodsList===null){
+        if (this.sortGoodsList === null) {
             // 如果数据不存在就请求一次
             // 请求分类与商品列表数据
             await saveSortGoods();
         }
+        // 要渲染的商品数量
+        this.goodsList = this.sortGoodsList.map(s => {
+            // 渲染的商品数量，（0，2）表示渲染两个
+            s.goods = s.goods.slice(0, 8);
+            return s;
+        });
     },
 };
 </script>
@@ -253,6 +275,7 @@ export default {
 
     }
 
+    // 内容部分
     main {
 
         // 上部分
@@ -509,6 +532,54 @@ export default {
                         }
                     }
                 }
+
+                // 查看更多
+                .lookMore {
+                    margin-top: vw(20);
+
+                    .more {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: vw(70);
+                        height: vw(24);
+                        border: 1px solid #999;
+                        margin: 0 auto;
+
+                        h2 {
+                            font-size: vw(12);
+                            color: #999;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // 底部信息
+    footer {
+        background-color: #fff;
+        margin-top: vw(10);
+        padding: vw(25) 0px vw(15) 0px;
+
+        .ICP {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            >p {
+                font-size: vw(12);
+                font-weight: 400;
+                line-height: vw(20);
+                color: #999;
+            }
+
+            >a {
+                font-size: vw(12);
+                font-weight: 400;
+                line-height: vw(20);
+                color: #999;
             }
         }
     }

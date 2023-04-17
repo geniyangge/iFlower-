@@ -10,12 +10,15 @@
 </template>
 
 <script>
+// 引入vuex
+import { mapState } from 'vuex';
 
 export default {
   data() {
     return {
-
     };
+  },
+  computed: {
   },
 };
 </script>

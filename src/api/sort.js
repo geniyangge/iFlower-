@@ -15,8 +15,8 @@ const project_id = '337';
  * 获取所有商品分类信息
  *  - get请求
  */
-export async function getAllSort(params) {
-    params = { ...{ project_id }, ...params };
+export async function getAllSort(params = {}) {
+    params = { ...{ project_id, status: '1', limit: '40' }, ...params };
     return await myAxios({
         method: 'get',
         url: '/classify',
@@ -40,7 +40,43 @@ export async function getSortGoods() {
 
 // 保存所有商品分类信息
 export async function saveAllSort() {
+    let [data, err] = await getAllSort();
+    if (err) return;
+    // console.log(data.result);
 
+    // 处理后的分类商品列表
+    let sortList = [];
+
+    data.result.forEach(s => {
+        if (s.children) {
+            // 抓取 含有子分类 的顶级分类
+
+            // 顶级分类
+            let temp = {};
+            temp.title = s.name;
+            temp.id = s.id;
+
+            // 顶级分类下的子分类集合
+            let child = [];
+            s.children.forEach(c => {
+                // 每个子分类
+                let sort = {};
+                sort.title = c.name;
+                sort.id = c.id;
+                sort.parent_id = c.parent_id;
+
+                // 存入子集中
+                child.push(sort);
+            });
+            // 将子集赋给顶级分类
+            temp.children = child;
+            // 将顶级分类推进数据变量中
+            sortList.push(temp);
+        }
+    });
+    // console.log(sortList);
+    // 保存数据至vuex和localStorage
+    store.commit('SaveAllSortList', sortList);
 }
 
 // 保存每个分类下的商品信息

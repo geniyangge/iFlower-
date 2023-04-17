@@ -18,6 +18,10 @@ export default new Vuex.Store({
     swiperList: JSON.parse(localStorage.getItem('swiperList') || null),
     // 首页分类及其商品信息
     sortGoodsList: JSON.parse(localStorage.getItem('sortGoodsList') || null),
+    // 所有商品分类信息
+    allSortList: JSON.parse(localStorage.getItem('allSortList') || null),
+    // 热门商品列表
+    hotGoodsList: JSON.parse(localStorage.getItem('hotGoodsList') || null),
   },
   getters: {
   },
@@ -57,10 +61,20 @@ export default new Vuex.Store({
       state.swiperList = swiperList;
       localStorage.setItem('swiperList', JSON.stringify(swiperList));
     },
-    // 首页分类及其商品信息
+    // 保存首页分类及其商品信息
     SaveSortGoodsList(state, sortGoodsList) {
       state.sortGoodsList = sortGoodsList;
       localStorage.setItem('sortGoodsList', JSON.stringify(sortGoodsList));
+    },
+    // 保存所有商品分类信息
+    SaveAllSortList(state, allSortList) {
+      state.allSortList = allSortList;
+      localStorage.setItem('allSortList', JSON.stringify(allSortList));
+    },
+    // 保存热门商品列表
+    SaveHotGoodsList(state, hotGoodsList) {
+      state.hotGoodsList = hotGoodsList;
+      localStorage.setItem('hotGoodsList', JSON.stringify(hotGoodsList));
     },
   },
   actions: {

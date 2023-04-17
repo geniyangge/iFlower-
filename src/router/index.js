@@ -68,6 +68,12 @@ const routes = [
       }
     ],
   },
+  // search
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('@/views/search/index.vue'),
+  },
   // 我的订单
   {
     path: '/order',
