@@ -17,13 +17,16 @@
             <!-- 上部分 -->
             <div class="theHead">
                 <!-- 轮播图 -->
-                <div class="swiper">
-                    <van-swipe :autoplay="3000">
-                        <van-swipe-item v-for="(image, index) in swiperList" :key="index">
-                            <img v-lazy="image" />
-                        </van-swipe-item>
-                    </van-swipe>
-                </div>
+                <van-skeleton :row="6" :loading="loading">
+                    <div class="swiper">
+                        <van-swipe :autoplay="3000">
+                            <van-swipe-item v-for="(image, index) in swiperList" :key="index">
+                                <img v-lazy="image" />
+                            </van-swipe-item>
+                        </van-swipe>
+                    </div>
+                </van-skeleton>
+
 
                 <!-- 评价 -->
                 <div class="evaluate">
@@ -149,6 +152,8 @@ export default {
     name: "Home",
     data() {
         return {
+            // 骨架屏用
+            loading: true,
             // 分类栏图标和文字
             sortList: [
                 {
@@ -245,6 +250,7 @@ export default {
             s.goods = s.goods.slice(0, 8);
             return s;
         });
+        this.loading = false;
     },
 };
 </script>

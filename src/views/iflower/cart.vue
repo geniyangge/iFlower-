@@ -29,15 +29,61 @@
 
             <!-- 猜你喜欢 -->
             <div class="guessYouLike">
-                
+                <!-- 标题 -->
+                <h2>猜你喜欢</h2>
+                <!-- 商品列表 -->
+                <van-skeleton :row="8" :loading="loading">
+                    <GoodsList :goodsList="guessYouLikeGoods" />
+                </van-skeleton>
             </div>
         </main>
     </div>
 </template>
 
 <script>
+// 引入vuex
+import { mapState } from 'vuex';
+// 引入API
+import { saveHotGoods } from '@/api/goods';
+// 引入商品列表 组件
+import GoodsList from '@/components/goodsList.vue';
+
 export default {
     name: 'Cart',
+    components: {
+        GoodsList,
+    },
+    data() {
+        return {
+            // 猜你喜欢 商品列表
+            guessYouLikeGoods: JSON.parse(localStorage.getItem('guessYouLikeGoods') || null),
+            // 骨架屏使用，是否加载中
+            loading: true,
+        };
+    },
+    computed: {
+        ...mapState(['hotGoodsList']),
+    },
+    async created() {
+        if (this.hotGoodsList === null || this.guessYouLikeGoods === null) {
+            // 数据不存在，请求一次
+            await saveHotGoods();
+            // 过滤数据，并改为规定的键名
+            this.guessYouLikeGoods = [];
+            this.hotGoodsList.forEach(g => {
+                let temp = {};
+                temp.id = g.id;
+                temp.name = g.name;
+                temp.img = g.s_goods_photos[0].path;
+                temp.price = g.price;
+                temp.sold_num = g.sold_num;
+                this.guessYouLikeGoods.push(temp);
+            });
+            // 保存到localStorage
+            localStorage.setItem('guessYouLikeGoods', JSON.stringify(this.guessYouLikeGoods));
+        }
+        this.loading = false;
+    },
 };
 </script>
 
@@ -100,6 +146,20 @@ export default {
                     font-weight: 700;
                     background-color: $theme-color;
                 }
+            }
+        }
+
+        // 猜你喜欢
+        .guessYouLike {
+            background-color: #fff;
+            margin-top: vw(7.5);
+            padding-bottom: vw(50);
+
+            // 标题
+            >h2 {
+                font-size: vw(17.5);
+                color: #555;
+                padding: vw(15);
             }
         }
     }

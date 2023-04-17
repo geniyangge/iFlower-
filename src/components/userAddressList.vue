@@ -1,10 +1,11 @@
 <template>
+    <!-- 封装用户收货地址列表 组件 -->
+
     <!-- 这里使用到插槽做封装 #slot -->
     <!-- 向父组件传递两个值 -->
     <!-- row 选中元素 -->
     <!-- id 选中元素的ID -->
 
-    <!-- 用户收货地址列表 -->
     <div id="userAddressList">
         <!-- 默认地址 -->
         <template v-if="defaultAddress" v-cloak>
