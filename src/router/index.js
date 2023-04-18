@@ -42,6 +42,11 @@ const routes = [
         path: 'mine',
         name: 'Mine',
         component: () => import('@/views/iflower/mine.vue'),
+      },
+      {
+        path: 'searchResult',
+        name: 'SearchResult',
+        component: () => import('@/views/iflower/searchResult.vue'),
       }
     ],
   },
@@ -107,6 +112,12 @@ const routes = [
     path: '/editAddress',
     name: 'EditAddress',
     component: () => import('@/views/editShipping-address/index.vue'),
+  },
+  // 商品详情
+  {
+    path: '/details',
+    name: 'Details',
+    component: () => import('@/views/details/index.vue'),
   },
 ];
 

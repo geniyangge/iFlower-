@@ -55,7 +55,12 @@ export default {
     methods: {
         // 搜索
         search() {
-            console.log('search/index.vue', '功能开发中~');
+            if (!this.searchValue.trim()) {
+                // 如果未输入内容，则默认搜索爱情鲜花
+                this.searchValue = '爱情鲜花';
+            }
+            // 携带搜索信息，跳转到搜索结果页
+            this.$router.push({ name: 'SearchResult', query: { key: this.searchValue, title: this.searchValue } });
         }
     },
     async created() {

@@ -40,9 +40,10 @@
 
                 <!-- 分类 -->
                 <div class="sort">
-                    <van-grid :column-num="5" :border="false">
+                    <van-grid :column-num="5" :border="false" clickable>
                         <template v-for="item in sortList">
-                            <van-grid-item :text="item.title">
+                            <van-grid-item :text="item.title"
+                                :to="{ name: 'SearchResult', query: { title: item.title, classifyID: item.classifyID } }">
                                 <template #icon>
                                     <img :src="item.img" :alt="item.title">
                                 </template>
@@ -61,7 +62,8 @@
                     <!-- 上 三列 -->
                     <div class="toPeopleBox">
                         <template v-for="item in toPeopleList">
-                            <div class="toPeople">
+                            <div class="toPeople"
+                                @click="$router.push({ name: 'SearchResult', query: { title: item.title, classifyID: item.classifyID } })">
                                 <!-- 图片 -->
                                 <img :src="item.img" :alt="item.title">
                                 <!-- 文本块 绝对定位在底部 -->
@@ -75,7 +77,8 @@
                     <div class="toSceneBox">
                         <template v-for="item in toSceneList">
                             <!-- 文本块 -->
-                            <div class="toScene">
+                            <div class="toScene"
+                                @click="$router.push({ name: 'SearchResult', query: { title: item.title, classifyID: item.classifyID } })">
                                 <div class="toSceneText">
                                     <h3>{{ item.title }}</h3>
                                 </div>
@@ -158,22 +161,27 @@ export default {
             sortList: [
                 {
                     title: '花束',
+                    classifyID: '3236',
                     img: require('@/assets/images/home/huashu.webp'),
                 },
                 {
                     title: '礼盒',
+                    classifyID: '3240',
                     img: require('@/assets/images/home/lihe.webp'),
                 },
                 {
                     title: '蛋糕',
+                    classifyID: '3237',
                     img: require('@/assets/images/home/dangao.webp'),
                 },
                 {
                     title: '花篮',
+                    classifyID: '3238',
                     img: require('@/assets/images/home/hualan.webp'),
                 },
                 {
                     title: '绿植',
+                    classifyID: '3239',
                     img: require('@/assets/images/home/lvzhi.webp'),
                 },
             ],
@@ -182,16 +190,19 @@ export default {
             toPeopleList: [
                 {
                     title: '送恋人',
+                    classifyID: '3236',
                     img: require('@/assets/images/home/1.webp'),
                     titleBgc: '#ffafb2',
                 },
                 {
                     title: '送长辈',
+                    classifyID: '3240',
                     img: require('@/assets/images/home/2.webp'),
                     titleBgc: '#7eb254',
                 },
                 {
                     title: '送亲友',
+                    classifyID: '3241',
                     img: require('@/assets/images/home/3.webp'),
                     titleBgc: '#f1bf93',
                 },
@@ -200,18 +211,22 @@ export default {
             toSceneList: [
                 {
                     title: '生日祝福',
+                    classifyID: '3237',
                     img: require('@/assets/images/home/4.webp'),
                 },
                 {
                     title: '求婚表白',
+                    classifyID: '3236',
                     img: require('@/assets/images/home/5.webp'),
                 },
                 {
                     title: '商务开业',
+                    classifyID: '3238',
                     img: require('@/assets/images/home/6.webp'),
                 },
                 {
                     title: '装饰绿植',
+                    classifyID: '3239',
                     img: require('@/assets/images/home/7.webp'),
                 },
             ],

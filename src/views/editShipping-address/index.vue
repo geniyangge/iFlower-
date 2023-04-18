@@ -59,7 +59,7 @@ export default {
         this.initAddressInfo.addressDetail = this.addressInfoForm.desc;
         this.initAddressInfo.postalCode = this.addressInfoForm.post_code;
         this.initAddressInfo.isDefault = this.$route.params.isDefault;
-        this.initAddressInfo.areaCode = this.DecodeArea(this.addressInfoForm.area);
+        this.initAddressInfo.areaCode = this.DecodeArea(this.addressInfoForm.area_code);
     },
     methods: {
         // 地区转码函数<--vantCode
@@ -137,7 +137,7 @@ export default {
             // console.log(content);
             this.addressInfoForm.name = content.name;
             this.addressInfoForm.phone = content.tel;
-            this.addressInfoForm.area = this.EncodeArea(content);
+            this.addressInfoForm.area_code = this.EncodeArea(content);
             this.addressInfoForm.area_name = content.province + content.city + content.county;
             this.addressInfoForm.desc = content.addressDetail;
             this.addressInfoForm.post_code = content.postalCode;

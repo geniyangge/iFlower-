@@ -3,7 +3,7 @@
     <div class="goodsList">
         <template v-for="good in goodsList">
             <!-- 商品 -->
-            <div class="good">
+            <div class="good" :class="{ round }">
                 <!-- 商品图片 -->
                 <div class="goodImg">
                     <img :src="good.img" :alt="good.name">
@@ -41,7 +41,12 @@ export default {
         goodsList: {
             type: Array,
             default: () => [],
-        }
+        },
+        // 商品卡片底部是否倒圆角
+        round: {
+            type: Boolean,
+            default: false,
+        },
     }
 };
 </script>
@@ -59,6 +64,12 @@ export default {
         flex-shrink: 0;
         box-shadow: 0px vw(5) vw(10) 0px #dee2e5;
         margin-bottom: vw(10);
+        background-color: #fff;
+
+        &.round {
+            border-bottom-left-radius: vw(5);
+            border-bottom-right-radius: vw(5);
+        }
 
         // 商品图片
         >.goodImg {

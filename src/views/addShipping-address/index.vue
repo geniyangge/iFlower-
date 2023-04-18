@@ -76,6 +76,7 @@ export default {
             this.addressInfoForm.name = content.name;
             this.addressInfoForm.phone = content.tel;
             this.addressInfoForm.area = this.EncodeArea(content);
+            this.addressInfoForm.area_code = this.EncodeArea(content);
             this.addressInfoForm.area_name = content.province + content.city + content.county;
             this.addressInfoForm.desc = content.addressDetail;
             this.addressInfoForm.post_code = content.postalCode;
