@@ -79,6 +79,7 @@ export async function updateCartGood(data) {
  *  - delete请求
  */
 export async function deleteCartGood(id) {
+    if (!id) return console.log('api/cart.js', '请携带商品id');
     let data = { project_id };
     // 请求头携带登录令牌
     const headers = {
@@ -88,6 +89,7 @@ export async function deleteCartGood(id) {
     return await myAxios({
         method: 'delete',
         url: '/shoppingCart/' + id,
+        headers,
         data,
     });
 }

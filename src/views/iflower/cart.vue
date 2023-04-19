@@ -10,8 +10,13 @@
             </van-nav-bar>
         </header>
 
+        <!-- loading -->
+        <div class="loading" v-if="loading">
+            <van-loading type="spinner" color="#1989fa" />
+        </div>
+
         <!-- 主体 -->
-        <main>
+        <main v-else>
             <!-- 有商品的 购物车商品栏 -->
             <div class="hasGoods" v-if="hasGoods">
                 <!-- 商品列表 -->
@@ -33,7 +38,7 @@
                                 <div class="goodInfo">
                                     <!-- 删除图标 -->
                                     <div class="deleteIcon">
-                                        <van-icon name="delete-o" />
+                                        <van-icon name="delete-o" @click="deleteItem(good.id)" />
                                     </div>
                                     <!-- 商品名称 -->
                                     <h3>{{ good.name }}</h3>
@@ -47,7 +52,6 @@
                             </div>
                         </template>
                     </van-checkbox-group>
-
                 </div>
             </div>
 
@@ -60,7 +64,7 @@
                         <img src="@/assets/images/cart/cartback.webp" alt="空空的购物车">
                     </div>
                     <h2>购物车暂时没有商品</h2>
-                    <button>去逛逛</button>
+                    <button @click="$router.push('/')">去逛逛</button>
                 </div>
             </div>
 
@@ -69,18 +73,16 @@
                 <!-- 标题 -->
                 <h2>猜你喜欢</h2>
                 <!-- 商品列表 -->
-                <van-skeleton :row="8" :loading="skeleton_loading">
-                    <GoodsList :goodsList="guessYouLikeGoods" />
-                </van-skeleton>
+                <GoodsList :goodsList="guessYouLikeGoods" />
             </div>
-
-            <!-- 底部 去结算 -->
-            <template v-if="hasGoods">
-                <van-submit-bar :price="0" button-text="提交订单" @submit="">
-                    <van-checkbox :value="allSelect" @change="selectAll">全选</van-checkbox>
-                </van-submit-bar>
-            </template>
         </main>
+
+        <!-- 底部 去结算 -->
+        <template v-if="hasGoods">
+            <van-submit-bar :price="totalPrice" :button-text="'去结算(' + total + ')'" @submit="">
+                <van-checkbox v-model="allSelect">全选</van-checkbox>
+            </van-submit-bar>
+        </template>
     </div>
 </template>
 
@@ -89,7 +91,7 @@
 import { mapState, mapMutations } from 'vuex';
 // 引入API
 import { saveHotGoods } from '@/api/goods';
-import { getUserCartInfo } from '@/api/cart';
+import { getUserCartInfo, deleteCartGood } from '@/api/cart';
 // 引入商品列表 组件
 import GoodsList from '@/components/goodsList.vue';
 
@@ -100,43 +102,77 @@ export default {
     },
     data() {
         return {
+            // loading
+            loading: true,
             // 猜你喜欢 商品列表
             guessYouLikeGoods: JSON.parse(localStorage.getItem('guessYouLikeGoods') || null),
-            // 骨架屏使用，是否加载中
-            skeleton_loading: true,
-            // 购物车是否有商品
-            hasGoods: false,
             // 购物车商品列表
             cartGoodsList: [],
             // 选中的商品 复选框
             selectedGoodsList: [],
+            // 选中商品总价
+            totalPrice: 0,
+            // 选中商品种类数量
+            total: 0,
         };
     },
     computed: {
         ...mapState(['hotGoodsList']),
+        // 购物车是否有商品
+        hasGoods() {
+            return Boolean(this.cartGoodsList.length);
+        },
         // 全选
-        allSelect() {
-            return this.selectedGoodsList.length === this.cartGoodsList.length;
+        allSelect: {
+            set(bool) {
+                this.$refs.cartList.toggleAll(bool);
+            },
+            get() {
+                return this.cartGoodsList.length === this.selectedGoodsList.length;
+            },
         },
     },
     methods: {
         ...mapMutations(['showTabbar']),
         // 任意复选框状态改变时触发
         checkedChange(selectedList) {
-            console.log(selectedList);
+            // 计算选中商品总价及数量
+            // 商品总价 单位：分
+            this.totalPrice = this.cartGoodsList.reduce((a, b) => {
+                if (selectedList.includes(b.id)) {
+                    return a + b.num * b.sale_price;
+                } else {
+                    return a;
+                }
+            }, 0);
+            // 因为vant组件里单位是(分)，所以要乘以100
+            this.totalPrice *= 100;
+            // 商品数量
+            this.total = this.selectedGoodsList.length;
+            // console.log(selectedList);
         },
-        // 全选
-        selectAll(bool) {
-            // this.$refs.cartList.toggleAll(bool);
-        },
+        // 删除购物车中的商品
+        async deleteItem(id) {
+            this.$dialog.confirm({
+                message: '确定删除该商品？',
+            })
+                .then(async () => {
+                    let [data, err] = await deleteCartGood(id);
+                    if (err) return;
+                    this.$toast.success('删除成功');
+                    this.$router.go(0);
+                })
+                .catch(() => {
+                });
+        }
     },
     async created() {
         // 获取购物车信息
         let [cartInfo, err] = await getUserCartInfo();
-        if (err) return this.skeleton_loading = false;
+        if (err) {
+            this.loading = false;
+        }
         // console.log(cartInfo.result);
-        // 判断购物车是否有商品
-        this.hasGoods = cartInfo.result || false;
 
         // 保存购物车商品信息
         this.cartGoodsList = cartInfo.result.map(g => {
@@ -170,12 +206,16 @@ export default {
             // 保存到localStorage
             localStorage.setItem('guessYouLikeGoods', JSON.stringify(this.guessYouLikeGoods));
         }
-        this.skeleton_loading = false;
+        this.loading = false;
     },
     beforeRouteEnter(to, from, next) {
         // 控制底部Tabbar隐藏
         next(vm => {
-            vm.showTabbar(false);
+            if (vm.hasGoods) {
+                vm.showTabbar(false);
+            } else {
+                vm.showTabbar(true);
+            }
         });
     },
     beforeRouteLeave(to, from, next) {
@@ -345,6 +385,15 @@ export default {
                 padding: vw(15);
             }
         }
+    }
+
+    // 加载中
+    .loading {
+        width: 100%;
+        height: 40vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 </style>
