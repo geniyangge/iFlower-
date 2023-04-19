@@ -3,7 +3,7 @@
     <div class="goodsList">
         <template v-for="good in goodsList">
             <!-- 商品 -->
-            <div class="good" :class="{ round }">
+            <div class="good" :class="{ round }" @click="$router.push({ name: 'Details', query: { id: good.id } })">
                 <!-- 商品图片 -->
                 <div class="goodImg">
                     <img :src="good.img" :alt="good.name">

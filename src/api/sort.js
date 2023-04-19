@@ -94,6 +94,7 @@ export async function saveSortGoods() {
             // 某个分类及其分类下的商品信息
             let temp = {};
             temp.title = s.name;
+            temp.id = s.id;
 
             // 分类下的商品信息
             let goods = [];
@@ -101,6 +102,7 @@ export async function saveSortGoods() {
                 // 单个商品信息
                 let good = {};
                 good.name = g.name;
+                good.id = g.id;
                 good.price = g.price;
                 good.sold_num = g.sold_num;
                 good.img = g.s_goods_photos[0].path;

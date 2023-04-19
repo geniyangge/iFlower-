@@ -12,36 +12,44 @@
             </van-nav-bar>
         </header>
 
+        <!-- loading -->
+        <div class="loading" v-if="loading">
+            <van-loading type="spinner" color="#1989fa" />
+        </div>
         <!-- 主体 -->
-        <main>
+        <main v-else>
             <!-- 商品轮播图 -->
             <div class="swiper">
-                <!-- <van-swipe :autoplay="3000">
-                    <van-swipe-item v-for="(image, index) in images" :key="index">
-                        <img v-lazy="image" />
+                <van-swipe :autoplay="3000">
+                    <van-swipe-item v-for="(image, index) in goodDesc.img" :key="index">
+                        <img v-lazy="image.path" />
                     </van-swipe-item>
-                </van-swipe> -->
+                    <!-- 测试用，下面可删,<van-swipe-item> -->
+                    <van-swipe-item v-for="(image, index) in goodDesc.img" :key="Math.random()">
+                        <img v-lazy="image.path" />
+                    </van-swipe-item>
+                </van-swipe>
             </div>
             <!-- 商品介绍 -->
             <div class="desc">
                 <!-- 商品名称 -->
-                <h2>此情不渝</h2>
+                <h2>{{ goodDesc.name }}</h2>
                 <!-- 商品价格 -->
                 <div class="price">
-                    <h3>￥299<span>￥399</span></h3>
-                    <p>已售26576笔</p>
+                    <h3>￥{{ goodDesc.sale_price }}<span>￥{{ goodDesc.price }}</span></h3>
+                    <p>已售{{ goodDesc.sold_num }}笔</p>
                 </div>
             </div>
             <!-- 描述 -->
             <div class="description">
                 <!-- 每个描述 -->
-                <template>
-                    <div class="goodDesc">
+                <template v-for="desc in goodSku">
+                    <div class="goodDesc" v-if="desc">
                         <div class="title">
-                            <h3>规格</h3>
+                            <h3>{{ desc.name }}</h3>
                         </div>
                         <div class="text">
-                            <p>19枝精品红玫瑰，尤加利叶搭配</p>
+                            <p>{{ desc.sku_value }}</p>
                         </div>
                     </div>
                 </template>
@@ -56,20 +64,62 @@
             </div>
             <!-- 订单评价 -->
             <div class="evaluate">
+                <!-- 评价标头 -->
                 <div class="evaluate-title">
                     <h3>订单评价</h3>
                     <p>最近已有<span>321</span>条评论&nbsp;
                         <van-icon name="arrow" size="3.2vw" />
                     </p>
                 </div>
+                <!-- 评价内容 -->
+                <div class="evaluate-content">
+                    <!-- 评论区 -->
+                    <div class="evaluate-area">
+                        <!-- 每一条评论 -->
+                        <template v-for="item in 2">
+                            <div class="evaluate-item">
+                                <!-- 用户 -->
+                                <div class="evaluate-user">
+                                    <!-- 左侧 -->
+                                    <div class="evaluate-user-left">
+                                        <van-image round width="8vw" height="8vw"
+                                            src="https://img01.yzcdn.cn/vant/cat.jpeg" />
+                                        <p>136****7812</p>
+                                    </div>
+                                    <!-- 右侧 -->
+                                    <div class="evaluate-user-right">
+                                        <i class="iconfont icon-shoucang"></i>
+                                    </div>
+                                </div>
+                                <!-- 信息 -->
+                                <div class="evaluate-info">
+                                    <p>沟通愉悦，配送及时，价格美丽，非常喜欢</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <!-- 查看更多评价 -->
+                    <div class="lookMore">
+                        <button>查看更多评价</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 产品详情 -->
+            <div class="goodDetails">
+                <!-- 标题 -->
+                <div class="goodDetails-title">
+                    <h3>产品详情</h3>
+                </div>
+                <!-- 图片 -->
+                <div class="goodDetails-images" v-html="goodDesc.rich_text"></div>
             </div>
         </main>
 
         <!-- 底部 商品导航 -->
         <van-goods-action>
-            <van-goods-action-icon icon="chat-o" text="客服" @click="" />
-            <van-goods-action-icon icon="cart-o" text="购物车" @click="" />
-            <van-goods-action-icon icon="shop-o" text="店铺" @click="" />
+            <van-goods-action-icon icon="home-o" text="首页" to="/" />
+            <van-goods-action-icon icon="phone-o" text="电话" @click="" />
+            <van-goods-action-icon icon="cart-o" text="购物车" to="/cart" />
             <van-goods-action-button type="warning" text="加入购物车" @click="" />
             <van-goods-action-button type="danger" text="立即购买" @click="" />
         </van-goods-action>
@@ -77,12 +127,92 @@
 </template>
 
 <script>
+// 引入API
+import { getGoodSku } from '@/api/specification';
+import { getGoodDesc } from '@/api/goods';
+
 export default {
     name: 'Details',
     data() {
         return {
+            // loading
+            loading: false,
+            // 要购买的商品数量
             goodNumber: 0,
+            // 商品id
+            id: this.$route.query.id || null,
+            // 商品规格
+            goodSku: [],
+            // 商品详细信息
+            goodDesc: {
+                id: '',  // 商品ID
+                name: '',  // 商品名称
+                price: 0,    // 商品价格
+                sale_price: 0,   // 商品优惠价格
+                sold_num: 0,    // 商品销量
+                img: [],    // 商品图片
+                rich_text: '',  // 富文本
+            },
         };
+    },
+    methods: {
+        // 获取商品信息
+        getGoodInfo(id) {
+            // 开启loading
+            this.loading = true;
+            // 请求商品的规格以及详细信息
+            Promise.all([getGoodSku(id), getGoodDesc(id)])
+                .then(res => {
+                    let [[sku, err1], [desc, err2]] = res;
+                    // 商品规格
+                    // console.log(sku.result);
+                    // console.log(desc.result);
+                    // 获取规格码
+                    let skuCodes = sku.result.stock_list[0].goods_specs.split(",");
+                    // 遍历每类规格
+                    this.goodSku = sku.result.property.map(p => {
+                        // 根据规格码，筛选出需要的规格
+                        let sku = p.s_attributesValues.map(v => {
+                            if (skuCodes.includes(v.id.toString())) {
+                                return {
+                                    sku_value: v.attribute_value,
+                                };
+                            }
+                            return null;
+                        });
+                        // sku === [null,{},null]
+                        let property = sku.filter(v => v !== null);
+                        // // 如果此次没有需要的规格
+                        if (!property.length) return null;
+                        property = property[0];
+                        // property === {}
+                        property.name = p.keyName;
+                        return property;
+                    });
+                    // 商品详细信息
+                    this.goodDesc = {
+                        id: desc.result.id,  // 商品ID
+                        name: desc.result.name,  // 商品名称
+                        price: desc.result.price,    // 商品价格
+                        sale_price: desc.result.sale_price,   // 商品优惠价格
+                        sold_num: desc.result.sold_num,    // 商品销量
+                        img: desc.result.s_goods_photos,    // 商品图片
+                        rich_text: desc.result.rich_text,   // 富文本
+                    };
+                    // console.log(this.goodDesc);
+                })
+                .catch(err => {
+                    console.log('details/index.vue', err);
+                })
+                .finally(_ => {
+                    // 取消loading
+                    this.loading = false;
+                });
+        }
+    },
+    created() {
+        // 获取商品信息
+        this.getGoodInfo(this.id);
     },
 };
 </script>
@@ -122,6 +252,15 @@ export default {
 
     }
 
+    // 加载中
+    .loading {
+        width: 100%;
+        height: 40vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
     // 主体
     main {
         flex: 1;
@@ -130,7 +269,12 @@ export default {
         .swiper {
             width: vw(375);
             height: vw(375);
-            background-color: skyblue;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
         }
 
         // 商品介绍
@@ -211,6 +355,7 @@ export default {
                     >p {
                         color: #555;
                         font-size: vw(14);
+                        line-height: 1.5;
                     }
                 }
 
@@ -245,6 +390,7 @@ export default {
         // 订单评价
         .evaluate {
             background-color: #fff;
+            margin-bottom: vw(7.5);
 
             // 标头
             .evaluate-title {
@@ -264,6 +410,108 @@ export default {
                     line-height: vw(14);
                     color: #333;
                     font-size: vw(12);
+                }
+            }
+
+            // 评价内容
+            .evaluate-content {
+                background-color: #fff;
+                padding: vw(5) vw(15);
+
+                // 评论区
+                .evaluate-area {
+
+                    // 每一条评论
+                    .evaluate-item {
+                        &:not(:last-of-type) {
+                            border-bottom: 1px solid #e9ecf0;
+                        }
+
+                        // 用户
+                        .evaluate-user {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            padding: vw(10) 0px;
+
+                            // 左侧
+                            .evaluate-user-left {
+                                display: flex;
+                                align-items: center;
+
+                                >p {
+                                    font-size: vw(14);
+                                    color: #555;
+                                    margin-left: vw(30);
+                                }
+                            }
+
+                            // 右侧
+                            .evaluate-user-right {
+
+                                >i {
+                                    font-size: vw(14);
+                                    color: #555;
+                                }
+                            }
+                        }
+
+                        // 评论信息
+                        .evaluate-info {
+                            padding: vw(10) 0px vw(20);
+
+                            >p {
+                                line-height: 1.5;
+                                color: #555;
+                                font-size: vw(14);
+                            }
+                        }
+                    }
+                }
+
+
+
+                // 查看更多评价
+                .lookMore {
+                    padding: vw(15) 0px vw(30);
+                    display: flex;
+                    justify-content: center;
+
+                    >button {
+                        border: 1px solid #232628;
+                        outline: none;
+                        width: vw(90);
+                        height: vw(28);
+                        color: #232628;
+                        font-size: vw(12);
+                        background-color: #fff;
+                        margin: 0 auto;
+                    }
+                }
+            }
+        }
+
+        // 产品详情
+        .goodDetails {
+            background-color: #fff;
+
+            // 标题
+            .goodDetails-title {
+                padding: vw(15);
+
+                >h3 {
+                    font-size: vw(16);
+                    color: #555;
+                }
+            }
+
+            // 图片
+            .goodDetails-images {
+                padding-bottom: vw(100);
+
+                img {
+                    width: 100%;
+                    object-fit: cover;
                 }
             }
         }

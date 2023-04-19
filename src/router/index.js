@@ -125,6 +125,7 @@ const router = new VueRouter({
   routes
 });
 
+// 全局前置路由守卫
 router.beforeEach((to, from, next) => {
   // 获取登录状态
   let userInfo = JSON.parse(localStorage.getItem('userInfo') || null);

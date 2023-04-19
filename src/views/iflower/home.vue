@@ -107,7 +107,7 @@
                         <div class="partContent">
                             <template v-for="good in sort.goods">
                                 <!-- 商品列表 -->
-                                <div class="product">
+                                <div class="product" @click="$router.push({ name: 'Details', query: { id: good.id } })">
                                     <!-- 商品图片 -->
                                     <div class="productImg">
                                         <img :src="good.img" :alt="good.name">
@@ -305,6 +305,8 @@ export default {
 
             // 轮播图
             .swiper {
+                height: vw(190);
+
                 img {
                     width: 100vw;
                     height: vw(190);
