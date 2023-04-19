@@ -58,7 +58,7 @@
             <div class="number">
                 <van-field name="stepper" label="数量">
                     <template #input>
-                        <van-stepper input-width="13.3333vw" button-size="8.5333vw" v-model="goodNumber" />
+                        <van-stepper v-model="goodNumber" input-width="13.3333vw" button-size="8.5333vw" />
                     </template>
                 </van-field>
             </div>
@@ -118,9 +118,9 @@
         <!-- 底部 商品导航 -->
         <van-goods-action>
             <van-goods-action-icon icon="home-o" text="首页" to="/" />
-            <van-goods-action-icon icon="phone-o" text="电话" @click="" />
-            <van-goods-action-icon icon="cart-o" text="购物车" to="/cart" />
-            <van-goods-action-button type="warning" text="加入购物车" @click="" />
+            <van-goods-action-icon icon="phone-o" text="电话" />
+            <van-goods-action-icon icon="cart-o" text="购物车" :badge="cartGoodsNum" to="/cart" />
+            <van-goods-action-button type="warning" text="加入购物车" @click="addGood" />
             <van-goods-action-button type="danger" text="立即购买" @click="" />
         </van-goods-action>
     </div>
@@ -130,15 +130,16 @@
 // 引入API
 import { getGoodSku } from '@/api/specification';
 import { getGoodDesc } from '@/api/goods';
+import { getUserCartInfo, addGoodsToCart } from '@/api/cart';
 
 export default {
     name: 'Details',
     data() {
         return {
             // loading
-            loading: false,
+            loading: true,
             // 要购买的商品数量
-            goodNumber: 0,
+            goodNumber: 1,
             // 商品id
             id: this.$route.query.id || null,
             // 商品规格
@@ -153,13 +154,15 @@ export default {
                 img: [],    // 商品图片
                 rich_text: '',  // 富文本
             },
+            // 购物车商品种类数量
+            cartGoodsNum: 0,
+            // 未添加过商品?
+            notAdd: true,
         };
     },
     methods: {
         // 获取商品信息
         getGoodInfo(id) {
-            // 开启loading
-            this.loading = true;
             // 请求商品的规格以及详细信息
             Promise.all([getGoodSku(id), getGoodDesc(id)])
                 .then(res => {
@@ -203,16 +206,37 @@ export default {
                 })
                 .catch(err => {
                     console.log('details/index.vue', err);
-                })
-                .finally(_ => {
-                    // 取消loading
-                    this.loading = false;
                 });
-        }
+        },
+        // 获取购物车信息
+        async getCartInfo() {
+            let [data, err] = await getUserCartInfo();
+            if (err) return;
+            this.cartGoodsNum = data.result.length;
+        },
+        // 添加商品至购物车
+        async addGood() {
+            let option = {
+                goods_id: this.id, // 商品ID
+                num: this.goodNumber,        // 数量
+            };
+            let [data, err] = await addGoodsToCart(option);
+            if (err) return;
+            if (this.notAdd) {
+                // 如果没添加过商品
+                await this.getCartInfo();
+                this.notAdd = false;
+            }
+            this.$toast.success('添加成功');
+        },
     },
-    created() {
+    async created() {
         // 获取商品信息
-        this.getGoodInfo(this.id);
+        await this.getGoodInfo(this.id);
+        // 获取购物车信息
+        await this.getCartInfo();
+        // 取消loading
+        this.loading = false;
     },
 };
 </script>

@@ -22,9 +22,10 @@ import { Empty } from 'vant';
 import { Loading } from 'vant';
 import { GoodsAction, GoodsActionIcon, GoodsActionButton } from 'vant';
 import { Stepper } from 'vant';
+import { Checkbox, CheckboxGroup } from 'vant';
+import { SubmitBar } from 'vant';
 // import { Popup } from 'vant';
 // import { Area } from 'vant';
-// import { Checkbox, CheckboxGroup } from 'vant';
 // import { Toast } from 'vant';
 
 // 使用vant插件
@@ -49,7 +50,8 @@ Vue.use(Empty);
 Vue.use(Loading);
 Vue.use(GoodsAction).use(GoodsActionButton).use(GoodsActionIcon);
 Vue.use(Stepper);
+Vue.use(Checkbox).use(CheckboxGroup);
+Vue.use(SubmitBar);
 // Vue.use(Popup);
 // Vue.use(Area);
-// Vue.use(Checkbox).use(CheckboxGroup);
 // Vue.use(Toast);

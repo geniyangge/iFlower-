@@ -6,6 +6,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    // 控制底部Tabbar的显示与隐藏
+    tabbarShow: true,
     // 用户登录信息
     userInfo: JSON.parse(localStorage.getItem('userInfo') || null),
     // 用户收货地址信息(除默认地址)
@@ -22,12 +24,14 @@ export default new Vuex.Store({
     allSortList: JSON.parse(localStorage.getItem('allSortList') || null),
     // 热门商品列表
     hotGoodsList: JSON.parse(localStorage.getItem('hotGoodsList') || null),
-    // 购物车商品种类数量
-    cartGoodsNumber: 0,
   },
   getters: {
   },
   mutations: {
+    // 控制底部Tabbar的显示与隐藏
+    showTabbar(state, bool) {
+      state.tabbarShow = bool;
+    },
     // 添加用户登录信息
     addUserInfo(state, userInfo) {
       // 保存用户信息到vuex
