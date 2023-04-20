@@ -136,6 +136,7 @@ export default {
         ...mapMutations(['showTabbar']),
         // 任意复选框状态改变时触发
         checkedChange(selectedList) {
+            console.log('iflower/cart.vue', selectedList);
             // 计算选中商品总价及数量
             // 商品总价 单位：分
             this.totalPrice = this.cartGoodsList.reduce((a, b) => {
@@ -178,6 +179,7 @@ export default {
         this.cartGoodsList = cartInfo.result.map(g => {
             let temp = {
                 id: g.id,   // 购物车商品ID
+                goods_id: g.goods_id,   // 商品ID
                 name: g.s_good.name,   // 购物车商品名称
                 num: g.num,   // 购物车商品数量
                 price: g.s_good.price,   // 购物车商品价格

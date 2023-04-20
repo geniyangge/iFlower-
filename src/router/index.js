@@ -112,6 +112,10 @@ const routes = [
     path: '/editAddress',
     name: 'EditAddress',
     component: () => import('@/views/editShipping-address/index.vue'),
+    meta: {
+      // 需要登录
+      required: true,
+    },
   },
   // 商品详情
   {
@@ -119,10 +123,20 @@ const routes = [
     name: 'Details',
     component: () => import('@/views/details/index.vue'),
   },
+  // 结算页
+  {
+    path: '/clearing',
+    name: 'Clearing',
+    component: () => import('@/views/clearing/index.vue'),
+    meta: {
+      // 需要登录
+      required: true,
+    },
+  },
 ];
 
 const router = new VueRouter({
-  routes
+  routes,
 });
 
 // 全局前置路由守卫
@@ -148,6 +162,11 @@ router.beforeEach((to, from, next) => {
 
   // 已登录，直接放行
   next();
+});
+
+// // 全局后置路由守卫
+router.afterEach((to, from, next) => {
+  window.scrollTo(0, 0);
 });
 
 export default router;
