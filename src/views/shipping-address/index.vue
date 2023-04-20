@@ -45,10 +45,10 @@ export default {
     computed: {
         ...mapState(['userAddressList', 'defaultAddress']),
     },
-    created() {
+    async created() {
         // 如果没有收货地址数据，请求一次
         if (this.userAddressList === null || this.defaultAddress === null) {
-            getUserAddressList();
+            await getUserAddressList();
         }
     },
     methods: {

@@ -42,6 +42,11 @@ const routes = [
         path: 'mine',
         name: 'Mine',
         component: () => import('@/views/iflower/mine.vue'),
+      },
+      {
+        path: 'searchResult',
+        name: 'SearchResult',
+        component: () => import('@/views/iflower/searchResult.vue'),
       }
     ],
   },
@@ -67,6 +72,12 @@ const routes = [
         },
       }
     ],
+  },
+  // search
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('@/views/search/index.vue'),
   },
   // 我的订单
   {
@@ -95,13 +106,40 @@ const routes = [
       // 需要登录
       required: true,
     },
-  }
+  },
+  // 编辑收货地址
+  {
+    path: '/editAddress',
+    name: 'EditAddress',
+    component: () => import('@/views/editShipping-address/index.vue'),
+    meta: {
+      // 需要登录
+      required: true,
+    },
+  },
+  // 商品详情
+  {
+    path: '/details',
+    name: 'Details',
+    component: () => import('@/views/details/index.vue'),
+  },
+  // 结算页
+  {
+    path: '/clearing',
+    name: 'Clearing',
+    component: () => import('@/views/clearing/index.vue'),
+    meta: {
+      // 需要登录
+      required: true,
+    },
+  },
 ];
 
 const router = new VueRouter({
-  routes
+  routes,
 });
 
+// 全局前置路由守卫
 router.beforeEach((to, from, next) => {
   // 获取登录状态
   let userInfo = JSON.parse(localStorage.getItem('userInfo') || null);
@@ -124,6 +162,11 @@ router.beforeEach((to, from, next) => {
 
   // 已登录，直接放行
   next();
+});
+
+// // 全局后置路由守卫
+router.afterEach((to, from, next) => {
+  window.scrollTo(0, 0);
 });
 
 export default router;

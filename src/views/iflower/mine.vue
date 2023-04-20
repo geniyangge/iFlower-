@@ -2,7 +2,11 @@
     <div id="mine">
         <!-- 顶部 -->
         <header>
-            <van-nav-bar title="个人中心" />
+            <van-nav-bar title="个人中心" @click-left="$router.back()">
+                <template #left>
+                    <van-icon name="arrow-left" size="5.8667vw" color="#555" />
+                </template>
+            </van-nav-bar>
         </header>
 
         <!-- 内容 -->

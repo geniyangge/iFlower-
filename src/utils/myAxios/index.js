@@ -4,7 +4,7 @@ import { handlerNetworkErr } from './handlerAxios';
 
 // 创建实例时配置默认值
 const myAxios = axios.create({
-    baseURL: process.env.BASE_URL,
+    baseURL: process.env.VUE_APP_BASE_URL,
     timeout: 10000,
     responseType: 'json',
 });

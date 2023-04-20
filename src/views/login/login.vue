@@ -27,6 +27,7 @@ import { userLoginAPI } from '@/api/user';
 import { getVerifyCodeAPI } from '@/api/veriCode';
 import { getUserAddressList } from '@/api/address';
 import { getCityListAPI } from '@/api/city';
+import { saveCartGoodsList } from '@/api/cart';
 // 引入vant组件
 import { Notify } from 'vant';
 import { Toast } from 'vant';
@@ -84,6 +85,8 @@ export default {
                 await this.addUserInfo(data.result);
                 // 请求用户收货地址信息
                 await getUserAddressList();
+                // 请求用户购物车商品列表
+                await saveCartGoodsList();
                 // 跳转
                 let toPath = this.$route.query.toPath;
                 this.$router.replace(toPath ? decodeURI(toPath) : '/');

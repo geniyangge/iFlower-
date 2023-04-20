@@ -1,15 +1,17 @@
 <template>
+    <!-- 封装用户收货地址列表 组件 -->
+
     <!-- 这里使用到插槽做封装 #slot -->
     <!-- 向父组件传递两个值 -->
     <!-- row 选中元素 -->
     <!-- id 选中元素的ID -->
 
-    <!-- 用户收货地址列表 -->
     <div id="userAddressList">
         <!-- 默认地址 -->
         <template v-if="defaultAddress" v-cloak>
             <van-swipe-cell>
-                <van-cell clickable style="margin-top: 1.3333vw;">
+                <van-cell clickable :to="{ name: 'EditAddress', params: { item: defaultAddress, isDefault: true } }"
+                    style="margin-top: 1.3333vw;">
                     <!-- 地址卡片 -->
                     <div class="addressCard">
                         <!-- 左侧信息 -->
@@ -41,7 +43,6 @@
                     <!-- id 选中元素的ID -->
                     <slot name="slot" :row="defaultAddress" :id="defaultAddress.id"></slot>
                 </template>
-
             </van-swipe-cell>
         </template>
 
@@ -49,7 +50,8 @@
         <!-- 收货地址列表 -->
         <template v-for="addressInfo in userAddressList" v-cloak>
             <van-swipe-cell>
-                <van-cell clickable style="margin-top: 1.3333vw;">
+                <van-cell clickable :to="{ name: 'EditAddress', params: { item: addressInfo } }"
+                    style="margin-top: 1.3333vw;">
                     <!-- 地址卡片 -->
                     <div class="addressCard">
                         <!-- 左侧信息 -->
@@ -126,6 +128,7 @@ export default {
     .addressCard {
         // background-color: #fff;
         padding: vw(15);
+        padding-right: vw(30);
         display: flex;
         justify-content: space-between;
         align-items: center;

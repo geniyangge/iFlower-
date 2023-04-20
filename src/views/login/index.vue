@@ -13,7 +13,7 @@
             <main>
                 <!-- logo -->
                 <div class="logo">
-                    <img src="@/assets/images/login/logo.webp" alt="logo" />
+                    <img src="@/assets/images/logo.webp" alt="logo" />
                 </div>
 
                 <keep-alive>
