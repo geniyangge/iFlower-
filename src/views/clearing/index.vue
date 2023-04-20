@@ -49,10 +49,9 @@
             <!-- 商品信息 -->
             <div class="module goodsInfo">
                 <van-cell-group inset>
-                    <template v-for="i in 2">
+                    <template v-for="good in goodsList">
                         <van-cell>
-                            <van-card num="2" price="2.00" desc="描述信息" title="商品标题"
-                                thumb="https://img01.yzcdn.cn/vant/ipad.jpeg" origin-price="10.00" />
+                            <van-card v-bind="good" />
                         </van-cell>
                     </template>
                 </van-cell-group>
@@ -116,7 +115,7 @@
                                 </div>
                                 <!-- 商品总价 -->
                                 <div class="totalPrice">
-                                    <p>商品总价：<span>￥&nbsp;333.00</span></p>
+                                    <p>商品总价：<span>￥&nbsp;{{ payAmount.toFixed(2) }}</span></p>
                                 </div>
                             </div>
                         </div>
@@ -127,12 +126,15 @@
 
         <!-- 底部提交订单 -->
         <footer>
-            <van-submit-bar :price="3050" button-text="提交订单" @submit="onSubmit" />
+            <van-submit-bar :price="payAmount * 100" button-text="提交订单" @submit="onSubmit" />
         </footer>
     </div>
 </template>
 
 <script>
+// 引入API
+import { getGoodDesc } from "@/api/goods";
+
 export default {
     name: 'ReceiveInfo',
     data() {
@@ -143,8 +145,83 @@ export default {
             buyerMsg: '',
             // 绑定单选框
             radio: '1',
+            // 接收query的goodsInfo
+            /* 
+                接收query的goodsInfo
+                goodsInfo === [
+                    {
+                        "id": 12, // 商品id
+                        "num": 0, // 商品数量
+                        "shoppingCartIds": 123 // 购物车id
+                    }
+                ]
+            */
+            goodsInfo: JSON.parse(this.$route.query.goodsInfo || null),
+            // 选购的商品列表（渲染用）
+            /* 
+                选购的商品列表
+                goodsList === [
+                    {
+                        "id": 1, // 商品id
+                        "title": '', // 商品名称
+                        "num": 0, // 商品数量
+                        "origin-price": 0, // 商品原价
+                        "price": 0, // 商品优惠价
+                        "thumb": '', // 商品图片
+                    }
+                ]
+            */
+            goodsList: [],
         };
-    }
+    },
+    computed: {
+        // 需支付 总额
+        payAmount() {
+            return this.goodsList.reduce((a, b) => {
+                return a + b.num * b.price;
+            }, 0);
+        }
+    },
+    methods: {
+        // 提交订单
+        onSubmit() {
+            console.log('clearing/index.vue', '功能开发中');
+        },
+        // 根据query传入的商品id，批量获取商品信息
+        async getGoodsInfo(goodsInfo = []) {
+            // console.log(goodsInfo);
+            // 将商品信息转换为请求队列
+            let reqsQuene = goodsInfo.map(g => getGoodDesc(g.id));
+            Promise.all(reqsQuene)
+                .then(res => {
+                    // console.log(res);
+                    // 将商品信息添加到goodsList中
+                    this.goodsList = res.map(g => g[0].result)
+                        .map(g => (
+                            {
+                                "id": g.id, // 商品id
+                                "title": g.name, // 商品名称
+                                "num": goodsInfo.find(v => v.id == g.id).num,  // 商品数量
+                                "origin-price": g.price, // 商品原价
+                                "price": g.sale_price, // 商品优惠价
+                                "thumb": g.s_goods_photos[0].path, // 商品图片
+                            }
+                        ));
+                    // console.log(this.goodsList);
+                })
+                .catch(err => {
+                    console.log('clearing/index.vue', '请求商品时发生错误', err);
+                });
+        },
+    },
+    async created() {
+        if (!this.goodsInfo) {
+            // 如果商品信息不存在，则返回到购物车页
+            return this.$router.replace('/cart');
+        }
+        // 获取商品信息
+        await this.getGoodsInfo(this.goodsInfo);
+    },
 };
 </script>
 

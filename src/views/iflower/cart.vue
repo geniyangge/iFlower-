@@ -79,7 +79,7 @@
 
         <!-- 底部 去结算 -->
         <template v-if="hasGoods">
-            <van-submit-bar :price="totalPrice" :button-text="'去结算(' + total + ')'" @submit="">
+            <van-submit-bar :price="totalPrice" :button-text="'去结算(' + total + ')'" @submit="onSubmit">
                 <van-checkbox v-model="allSelect">全选</van-checkbox>
             </van-submit-bar>
         </template>
@@ -107,7 +107,7 @@ export default {
             // 猜你喜欢 商品列表
             guessYouLikeGoods: JSON.parse(localStorage.getItem('guessYouLikeGoods') || null),
             // 购物车商品列表
-            cartGoodsList: [],
+            // cartGoodsList: [],
             // 选中的商品 复选框
             selectedGoodsList: [],
             // 选中商品总价
@@ -117,7 +117,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(['hotGoodsList']),
+        ...mapState(['hotGoodsList', 'cartGoodsList']),
         // 购物车是否有商品
         hasGoods() {
             return Boolean(this.cartGoodsList.length);
@@ -136,7 +136,7 @@ export default {
         ...mapMutations(['showTabbar']),
         // 任意复选框状态改变时触发
         checkedChange(selectedList) {
-            console.log('iflower/cart.vue', selectedList);
+            // console.log('iflower/cart.vue', selectedList);
             // 计算选中商品总价及数量
             // 商品总价 单位：分
             this.totalPrice = this.cartGoodsList.reduce((a, b) => {
@@ -165,31 +165,42 @@ export default {
                 })
                 .catch(() => {
                 });
-        }
+        },
+        // 去结算
+        onSubmit() {
+            if (!this.selectedGoodsList.length) return this.$toast.fail('请选择商品');
+            // console.log(this.selectedGoodsList);
+            // console.log(this.cartGoodsList);
+            // 获取需要结算的商品列表
+            /**
+             * 1.根据API要求的格式，取出选中商品的 数量、商品id、购物车id作为一个对象，归到一个数组中
+             * settlementGoods === [
+             *      {
+             *          num: 1,     // 数量
+             *          id: 12,     // 商品id
+             *          shoppingCartIds: 123,  // 购物车id
+             *      }
+             * ]
+             * 
+             * 2.然后携带选购的商品数组，跳转到订单结算页面
+             */
+            let goodsInfo = this.cartGoodsList
+                .filter(g => {
+                    return this.selectedGoodsList.includes(g.id);
+                })
+                .map(g => {
+                    return {
+                        num: g.num,     // 数量
+                        id: String(g.goods_id),     // 商品id
+                        shoppingCartIds: String(g.id),  // 购物车id
+                    };
+                });
+            // 携带需要结算的商品列表，跳转至商品结算页
+            this.$router.push({ path: '/clearing', query: { goodsInfo: JSON.stringify(goodsInfo) } });
+            // console.log(goodsInfo);
+        },
     },
     async created() {
-        // 获取购物车信息
-        let [cartInfo, err] = await getUserCartInfo();
-        if (err) {
-            this.loading = false;
-        }
-        // console.log(cartInfo.result);
-
-        // 保存购物车商品信息
-        this.cartGoodsList = cartInfo.result.map(g => {
-            let temp = {
-                id: g.id,   // 购物车商品ID
-                goods_id: g.goods_id,   // 商品ID
-                name: g.s_good.name,   // 购物车商品名称
-                num: g.num,   // 购物车商品数量
-                price: g.s_good.price,   // 购物车商品价格
-                sale_price: g.s_good.sale_price,   // 购物车商品优惠价格
-                img: g.s_good.s_goods_photos[0].path,   // 购物车商品图片
-            };
-            return temp;
-        });
-        // console.log(this.cartGoodsList);
-
         // 获取商品信息
         if (this.hotGoodsList === null || this.guessYouLikeGoods === null) {
             // 数据不存在，请求一次

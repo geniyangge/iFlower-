@@ -121,7 +121,7 @@
             <van-goods-action-icon icon="phone-o" text="电话" />
             <van-goods-action-icon icon="cart-o" text="购物车" :badge="cartGoodsNum" to="/cart" />
             <van-goods-action-button type="warning" text="加入购物车" @click="addGood" />
-            <van-goods-action-button type="danger" text="立即购买" @click="" />
+            <van-goods-action-button type="danger" text="立即购买" @click="buyNow" />
         </van-goods-action>
     </div>
 </template>
@@ -228,6 +228,19 @@ export default {
                 this.notAdd = false;
             }
             this.$toast.success('添加成功');
+        },
+        // 点击立即购买
+        buyNow() {
+            // 携带商品信息，跳转到商品结算页
+            this.$router.push({
+                path: '/clearing',
+                query: {
+                    goodsInfo: JSON.stringify([{
+                        id: this.goodDesc.id, // 商品ID
+                        num: this.goodNumber,    // 数量
+                    }]),
+                }
+            });
         },
     },
     async created() {

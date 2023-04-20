@@ -24,6 +24,8 @@ export default new Vuex.Store({
     allSortList: JSON.parse(localStorage.getItem('allSortList') || null),
     // 热门商品列表
     hotGoodsList: JSON.parse(localStorage.getItem('hotGoodsList') || null),
+    // 用户购物车商品列表
+    cartGoodsList: JSON.parse(localStorage.getItem('cartGoodsList') || null),
   },
   getters: {
   },
@@ -44,9 +46,11 @@ export default new Vuex.Store({
       state.userInfo = null;
       state.defaultAddress = null;
       state.userAddressList = null;
+      state.cartGoodsList = null;
       localStorage.removeItem('userInfo');
       localStorage.removeItem('defaultAddress');
       localStorage.removeItem('userAddressList');
+      localStorage.removeItem('cartGoodsList');
     },
     // 保存用户收货地址信息
     saveUserAddressInfo(state, { defaultAddress, userAddressList }) {
@@ -81,6 +85,11 @@ export default new Vuex.Store({
     SaveHotGoodsList(state, hotGoodsList) {
       state.hotGoodsList = hotGoodsList;
       localStorage.setItem('hotGoodsList', JSON.stringify(hotGoodsList));
+    },
+    // 保存用户购物车商品列表
+    SaveCartGoodsList(state, cartGoodsList) {
+      state.cartGoodsList = cartGoodsList;
+      localStorage.setItem('cartGoodsList', JSON.stringify(cartGoodsList));
     },
   },
   actions: {

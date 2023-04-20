@@ -93,3 +93,30 @@ export async function deleteCartGood(id) {
         data,
     });
 }
+
+
+// 保存用户购物车商品信息 至vuex
+export async function saveCartGoodsList() {
+    // 获取购物车信息
+    let [cartInfo, err] = await getUserCartInfo();
+    if (err) return;
+    // console.log(cartInfo.result);
+
+    // 保存购物车商品信息
+    let cartGoodsList = cartInfo.result.map(g => {
+        let temp = {
+            id: g.id,   // 购物车商品ID
+            goods_id: g.goods_id,   // 商品ID
+            name: g.s_good.name,   // 购物车商品名称
+            num: g.num,   // 购物车商品数量
+            price: g.s_good.price,   // 购物车商品价格
+            sale_price: g.s_good.sale_price,   // 购物车商品优惠价格
+            img: g.s_good.s_goods_photos[0].path,   // 购物车商品图片
+        };
+        return temp;
+    });
+
+    // 保存用户购物车商品信息 至vuex 和 localStorage
+    store.commit('SaveCartGoodsList', cartGoodsList);
+    // console.log(this.cartGoodsList);
+}
