@@ -219,6 +219,7 @@ export default {
             // 保存到localStorage
             localStorage.setItem('guessYouLikeGoods', JSON.stringify(this.guessYouLikeGoods));
         }
+
         this.loading = false;
     },
     beforeRouteEnter(to, from, next) {
