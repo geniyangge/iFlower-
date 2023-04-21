@@ -24,8 +24,8 @@ export default new Vuex.Store({
     allSortList: JSON.parse(localStorage.getItem('allSortList') || null),
     // 热门商品列表
     hotGoodsList: JSON.parse(localStorage.getItem('hotGoodsList') || null),
-    // 用户购物车商品列表
-    cartGoodsList: JSON.parse(localStorage.getItem('cartGoodsList') || null),
+    // 用户购物车商品列表(必须是个数组)
+    cartGoodsList: JSON.parse(localStorage.getItem('cartGoodsList') || null) || [],
   },
   getters: {
   },
