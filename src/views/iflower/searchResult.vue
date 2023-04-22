@@ -40,6 +40,7 @@
                 </ul>
             </div>
 
+            <!-- loading -->
             <div class="loading" v-if="loading">
                 <van-loading type="spinner" color="#1989fa" />
             </div>

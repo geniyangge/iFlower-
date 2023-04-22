@@ -106,6 +106,24 @@ export async function updateUserAddressAPI(id, data) {
     });
 }
 
+/**
+ * 根据地址ID获取详细信息
+ *  - get请求
+ */
+export async function getAddressByIdAPI(id) {
+    if (!id) return;
+    // 请求头携带登录令牌
+    const headers = {
+        // 登录令牌
+        "x-token": store.state.userInfo ? store.state.userInfo?.token : null,
+    };
+    return await myAxios({
+        method: 'get',
+        url: '/address/' + id,
+        headers,
+    });
+}
+
 
 //  获取用户收货地址列表 和 默认收货地址
 export async function getUserAddressList() {

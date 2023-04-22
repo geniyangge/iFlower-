@@ -26,7 +26,8 @@ import { Checkbox, CheckboxGroup } from 'vant';
 import { SubmitBar } from 'vant';
 import { Card } from 'vant';
 import { RadioGroup, Radio } from 'vant';
-// import { Popup } from 'vant';
+import { Popup } from 'vant';
+// import { Overlay } from 'vant';
 // import { Area } from 'vant';
 // import { Toast } from 'vant';
 
@@ -56,6 +57,7 @@ Vue.use(Checkbox).use(CheckboxGroup);
 Vue.use(SubmitBar);
 Vue.use(Card);
 Vue.use(Radio).use(RadioGroup);
-// Vue.use(Popup);
+Vue.use(Popup);
+// Vue.use(Overlay);
 // Vue.use(Area);
 // Vue.use(Toast);

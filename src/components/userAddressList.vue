@@ -10,10 +10,10 @@
         <!-- 默认地址 -->
         <template v-if="defaultAddress" v-cloak>
             <van-swipe-cell>
-                <van-cell clickable :to="{ name: 'EditAddress', params: { item: defaultAddress, isDefault: true } }"
-                    style="margin-top: 1.3333vw;">
+                <van-cell clickable style="margin-top: 1.3333vw;"
+                    @click="fromClearing ? saveAddressInfo(defaultAddress.id) : toEditAddress({ item: defaultAddress, isDefault: true })">
                     <!-- 地址卡片 -->
-                    <div class="addressCard">
+                    <div class="addressCard" :class="{ active: fromClearing && chosedAddressId === defaultAddress.id }">
                         <!-- 左侧信息 -->
                         <div class="info">
                             <h2>
@@ -32,7 +32,7 @@
                             </p>
                         </div>
                         <!-- 右侧图标 -->
-                        <div class="icon">
+                        <div class="icon" @click.stop="toEditAddress({ item: defaultAddress, isDefault: true })">
                             <i class="iconfont icon-bianji"></i>
                         </div>
                     </div>
@@ -50,10 +50,10 @@
         <!-- 收货地址列表 -->
         <template v-for="addressInfo in userAddressList" v-cloak>
             <van-swipe-cell>
-                <van-cell clickable :to="{ name: 'EditAddress', params: { item: addressInfo } }"
-                    style="margin-top: 1.3333vw;">
+                <van-cell clickable style="margin-top: 1.3333vw;"
+                    @click="fromClearing ? saveAddressInfo(addressInfo.id) : toEditAddress({ item: addressInfo })">
                     <!-- 地址卡片 -->
-                    <div class="addressCard">
+                    <div class="addressCard" :class="{ active: fromClearing && chosedAddressId === addressInfo.id }">
                         <!-- 左侧信息 -->
                         <div class="info">
                             <h2>
@@ -70,7 +70,7 @@
                             </p>
                         </div>
                         <!-- 右侧图标 -->
-                        <div class="icon">
+                        <div class="icon" @click.stop="toEditAddress({ item: addressInfo })">
                             <i class="iconfont icon-bianji"></i>
                         </div>
                     </div>
@@ -88,7 +88,8 @@
 export default {
     data() {
         return {
-
+            // 选中地址id(默认选中 默认地址)
+            chosedAddressId: this.defaultAddress.id,
         };
     },
     props: {
@@ -101,9 +102,28 @@ export default {
         defaultAddress: {
             type: Object,
             default: () => { },
+        },
+        // 判断是否从订单结算页跳转过来的
+        fromClearing: {
+            type: Boolean,
+            default: false,
         }
     },
     methods: {
+        // 跳转到地址编辑页
+        toEditAddress(params) {
+            this.$router.push({ name: 'EditAddress', params });
+        },
+        // 保存选中地址信息
+        saveAddressInfo(id) {
+            this.chosedAddressId = id;
+            // 通知父组件 选中地址的id
+            this.$emit('chosedAddressId', this.chosedAddressId);
+        },
+    },
+    created() {
+        // 通知父组件 选中地址的id
+        this.$emit('chosedAddressId', this.chosedAddressId);
     },
 };
 </script>
@@ -128,10 +148,14 @@ export default {
     .addressCard {
         // background-color: #fff;
         padding: vw(15);
-        padding-right: vw(30);
+        padding-right: 0px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        &.active {
+            background-color: #eee;
+        }
 
         // 左侧信息
         .info {
@@ -182,6 +206,11 @@ export default {
 
         // 右侧图标
         .icon {
+            width: vw(54);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
             >i {
                 font-size: vw(22);
             }
