@@ -119,7 +119,7 @@
         <van-goods-action>
             <van-goods-action-icon icon="home-o" text="首页" to="/" />
             <van-goods-action-icon icon="phone-o" text="电话" />
-            <van-goods-action-icon icon="cart-o" text="购物车" :badge="cartGoodsNum" to="/cart" />
+            <van-goods-action-icon icon="cart-o" text="购物车" :badge="userInfo === null ? null : cartGoodsNum" to="/cart" />
             <van-goods-action-button type="warning" text="加入购物车" @click="addGood" />
             <van-goods-action-button type="danger" text="立即购买" @click="buyNow" />
         </van-goods-action>
@@ -131,6 +131,8 @@
 import { getGoodSku } from '@/api/specification';
 import { getGoodDesc } from '@/api/goods';
 import { getUserCartInfo, addGoodsToCart } from '@/api/cart';
+// 引入vuex
+import { mapState } from 'vuex';
 
 export default {
     name: 'Details',
@@ -159,6 +161,9 @@ export default {
             // 未添加过商品?
             notAdd: true,
         };
+    },
+    computed: {
+        ...mapState(['userInfo']),
     },
     methods: {
         // 获取商品信息
@@ -216,9 +221,21 @@ export default {
         },
         // 添加商品至购物车
         async addGood() {
+            if (this.userInfo === null) {
+                // 未登录，提示
+                this.$notify({
+                    type: 'danger',
+                    message: '请先登录',
+                    duration: 2000,
+                });
+                // 跳转到登录页
+                this.$router.push('/login');
+                return;
+            }
+
             let option = {
                 goods_id: this.id, // 商品ID
-                num: this.goodNumber,        // 数量
+                num: this.goodNumber,  // 数量
             };
             let [data, err] = await addGoodsToCart(option);
             if (err) return;

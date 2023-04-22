@@ -3,13 +3,15 @@
     <div id="address">
         <!-- 标题栏 -->
         <div class="title">
-            <van-nav-bar title="收货地址" left-arrow @click-left="$router.replace('/mine')" :border="false" />
+            <van-nav-bar :title="fromClearing ? '选择收货地址' : '收货地址'" left-arrow :right-text="fromClearing ? '确定' : null"
+                @click-left="$router.back()" @click-right="commitInfo" :border="false" />
         </div>
 
         <!-- 用户收货地址列表 -->
         <main>
             <!-- 使用自定义组件 展示用户收货地址列表 -->
-            <UserAddressList :userAddressList="userAddressList" :defaultAddress="defaultAddress">
+            <UserAddressList :userAddressList="userAddressList" :defaultAddress="defaultAddress"
+                @chosedAddressId="getChosedAddressId" :fromClearing="fromClearing">
                 <template #slot="{ row, id }">
                     <van-button square text="删除" type="danger" class="delete-button" @click="deleteItem(row, id)" />
                 </template>
@@ -40,15 +42,17 @@ export default {
     },
     data() {
         return {
+            // query上的商品信息(从订单结算页传递过来)
+            goodsInfo: JSON.parse(this.$route.query.goodsInfo || null),
+            // 选中的商品收货地址id
+            chosedAddressId: 0,
         };
     },
     computed: {
         ...mapState(['userAddressList', 'defaultAddress']),
-    },
-    async created() {
-        // 如果没有收货地址数据，请求一次
-        if (this.userAddressList === null || this.defaultAddress === null) {
-            await getUserAddressList();
+        // 判断是否从订单结算页跳转过来的
+        fromClearing() {
+            return Boolean(this.goodsInfo);
         }
     },
     methods: {
@@ -74,8 +78,31 @@ export default {
                 .catch(() => {
                     // 取消
                 });
+        },
+        // 点击标题栏的确定，跳转回订单结算页
+        commitInfo() {
+            // query增加 选中的地址id信息 ，返回到上一个页面中
+            // let query = { goodsInfo: JSON.stringify(this.goodsInfo), addressId: this.chosedAddressId };
+            // this.$router.replace({ path: '/clearing', query });
+
+            // 保存选中的地址id 到sessionStorage中
+            sessionStorage.setItem('addressId', this.chosedAddressId);
+            // 返回商品订单页
+            this.$router.back();
+        },
+        // 获取选中的用户收货地址id
+        getChosedAddressId(id) {
+            // 该函数由子组件通知触发
+            // 保存 选中的商品收货地址id 到当前vue实例上
+            this.chosedAddressId = id;
+        },
+    },
+    async created() {
+        // 如果没有收货地址数据，请求一次
+        if (this.userAddressList === null || this.defaultAddress === null) {
+            await getUserAddressList();
         }
-    }
+    },
 };
 </script>
 
