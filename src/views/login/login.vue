@@ -27,12 +27,11 @@ import { userLoginAPI } from '@/api/user';
 import { getVerifyCodeAPI } from '@/api/veriCode';
 import { getUserAddressList } from '@/api/address';
 import { getCityListAPI } from '@/api/city';
-import { saveCartGoodsList } from '@/api/cart';
 // 引入vant组件
 import { Notify } from 'vant';
 import { Toast } from 'vant';
 // 引入vuex
-import { mapMutations, mapState } from 'vuex';
+import { mapMutations, mapState, mapActions } from 'vuex';
 
 export default {
     name: 'Login',
@@ -55,6 +54,7 @@ export default {
         ...mapState(['cityList']),
     },
     methods: {
+        ...mapActions(['getCartGoodsList']),
         ...mapMutations(['addUserInfo', 'saveCityList']),
         // 请求验证码
         async reqVerifyCode() {
@@ -86,7 +86,7 @@ export default {
                 // 请求用户收货地址信息
                 await getUserAddressList();
                 // 请求用户购物车商品列表
-                await saveCartGoodsList();
+                await this.getCartGoodsList();
                 // 跳转
                 let toPath = this.$route.query.toPath;
                 this.$router.replace(toPath ? decodeURI(toPath) : '/');

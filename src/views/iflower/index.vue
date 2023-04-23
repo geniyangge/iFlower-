@@ -28,7 +28,7 @@
 
 <script>
 // 引入vuex
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
     name: "Iflower",
@@ -39,7 +39,17 @@ export default {
     },
     computed: {
         ...mapState(['tabbarShow', 'cartGoodsList', 'userInfo']),
-    }
+    },
+    methods: {
+        ...mapActions(['getCartGoodsList']),
+    },
+    async created() {
+        // 获取购物车商品列表
+        if (this.userInfo && sessionStorage.getItem('cartGoodsList') === null) {
+            // 如果数据不存在，请求一次
+            await this.getCartGoodsList();
+        }
+    },
 };
 </script>
 

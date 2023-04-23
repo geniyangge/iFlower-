@@ -130,9 +130,9 @@
 // 引入API
 import { getGoodSku } from '@/api/specification';
 import { getGoodDesc } from '@/api/goods';
-import { getUserCartInfo, addGoodsToCart } from '@/api/cart';
+import { getUserCartInfo, addGoodsToCartAPI } from '@/api/cart';
 // 引入vuex
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
     name: 'Details',
@@ -157,15 +157,18 @@ export default {
                 rich_text: '',  // 富文本
             },
             // 购物车商品种类数量
-            cartGoodsNum: 0,
-            // 未添加过商品?
-            notAdd: true,
+            // cartGoodsNum: 0,
         };
     },
     computed: {
-        ...mapState(['userInfo']),
+        ...mapState(['userInfo', 'cartGoodsList']),
+        // 购物车商品种类数量
+        cartGoodsNum() {
+            return this.cartGoodsList.length;
+        },
     },
     methods: {
+        ...mapActions(['getCartGoodsList']),
         // 获取商品信息
         getGoodInfo(id) {
             // 请求商品的规格以及详细信息
@@ -214,11 +217,11 @@ export default {
                 });
         },
         // 获取购物车信息
-        async getCartInfo() {
-            let [data, err] = await getUserCartInfo();
-            if (err) return;
-            this.cartGoodsNum = data.result.length;
-        },
+        // async getCartInfo() {
+        //     let [data, err] = await getUserCartInfo();
+        //     if (err) return;
+        //     this.cartGoodsNum = data.result.length;
+        // },
         // 添加商品至购物车
         async addGood() {
             if (this.userInfo === null) {
@@ -237,13 +240,10 @@ export default {
                 goods_id: this.id, // 商品ID
                 num: this.goodNumber,  // 数量
             };
-            let [data, err] = await addGoodsToCart(option);
+            let [data, err] = await addGoodsToCartAPI(option);
             if (err) return;
-            if (this.notAdd) {
-                // 如果没添加过商品
-                await this.getCartInfo();
-                this.notAdd = false;
-            }
+            // 请求新的购物车商品列表
+            await this.getCartGoodsList();
             this.$toast.success('添加成功');
         },
         // 点击立即购买
@@ -263,8 +263,13 @@ export default {
     async created() {
         // 获取商品信息
         await this.getGoodInfo(this.id);
+
         // 获取购物车信息
-        await this.getCartInfo();
+        if (this.userInfo && sessionStorage.getItem('cartGoodsList') === null) {
+            // 如果数据不存在，请求一次
+            await this.getCartGoodsList();
+        }
+
         // 取消loading
         this.loading = false;
     },

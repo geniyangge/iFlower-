@@ -19,7 +19,7 @@ const project_id = "337";
  *      num: 1,        // 数量
  *  }
  */
-export async function addGoodsToCart(data) {
+export async function addGoodsToCartAPI(data) {
     data = { ...{ project_id }, ...data };
     // 请求头携带登录令牌
     const headers = {
