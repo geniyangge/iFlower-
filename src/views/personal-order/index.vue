@@ -6,6 +6,7 @@
             <van-nav-bar title="我的订单" left-arrow @click-left="$router.back()" :border="false" />
         </div>
 
+
         <main>
             <!-- 有订单信息 -->
             <div class="order-container">
@@ -18,8 +19,13 @@
                     </van-dropdown-menu>
                 </div>
 
-                <!-- 订单列表 -->
-                <div class="order-list">
+                <!-- loading -->
+                <div class="loading" v-if="loading">
+                    <van-loading type="spinner" color="#1989fa" />
+                </div>
+
+                <!-- 订单列表 只有订单存在才显示 -->
+                <div class="order-list" v-if="orderList.length && !loading">
                     <van-list :immediate-check="false" v-model="loadingMore" :finished="isFinished"
                         finished-text="我可是有底线的噢~" @load="loadMore">
                         <!-- 每个订单信息 -->
@@ -57,9 +63,8 @@
                 </div>
             </div>
 
-
-            <!-- 无订单信息 -->
-            <div class="nothing" v-if="false">
+            <!-- 无订单信息 未登录或无订单就显示 -->
+            <div class="nothing" v-if="orderList.length === 0 && !loading">
                 <div class="nothing-img">
                     <img src="@/assets/images/order/nothing.png" alt="nothing">
                 </div>
@@ -75,11 +80,16 @@
 import { getOrderListAPI, deleteOrderAPI } from '@/api/order.js';
 // 引入日期格式化组件
 import moment from 'moment';
+// 引入vuex
+import { mapState } from 'vuex';
 
 export default {
     name: "Order",
     data() {
         return {
+            // 是否显示loading
+            loading: true,
+            // 排序模式值
             sortModeValue: 'a',
             // 订单状态
             filterMode: [
@@ -113,6 +123,7 @@ export default {
         };
     },
     computed: {
+        ...mapState(['userInfo']),
         // 判断数据是否已经请求完
         isFinished() {
             return this.listTotal === this.orderList.length;
@@ -189,6 +200,8 @@ export default {
     async created() {
         // 请求订单列表
         await this.getOrderList(this.reqOption);
+
+        this.loading = false;
     },
 };
 </script>
@@ -205,6 +218,15 @@ export default {
         ::v-deep .van-nav-bar__content {
             height: vw(55);
         }
+    }
+
+    // 加载中
+    .loading {
+        width: 100%;
+        height: 40vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     main {
