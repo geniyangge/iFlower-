@@ -130,7 +130,7 @@
 // 引入API
 import { getGoodSku } from '@/api/specification';
 import { getGoodDesc } from '@/api/goods';
-import { getUserCartInfo, addGoodsToCartAPI } from '@/api/cart';
+import { addGoodsToCartAPI } from '@/api/cart';
 // 引入vuex
 import { mapState, mapActions } from 'vuex';
 

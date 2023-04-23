@@ -31,6 +31,10 @@ export default new Vuex.Store({
     cartGoodsList: JSON.parse(sessionStorage.getItem('cartGoodsList') || null) || [],
   },
   getters: {
+    // 登录令牌
+    token(state) {
+      return state.userInfo ? state.userInfo?.token : null;
+    },
   },
   mutations: {
     // 控制底部Tabbar的显示与隐藏

@@ -161,7 +161,7 @@ import { getUserAddressList, getAddressByIdAPI } from '@/api/address';
 import { addOrderAPI } from '@/api/order';
 import { createPaymentAPI, queryPaymentAPI } from '@/api/payment';
 // 引入vuex
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 // 引入QRCode
 import QRCode from 'qrcode';
 
@@ -233,6 +233,7 @@ export default {
         },
     },
     methods: {
+        ...mapActions(['getCartGoodsList']),
         // 提交订单
         async onSubmit() {
             let option = {
@@ -243,6 +244,10 @@ export default {
             // 创建订单
             let [order_data, order_err] = await addOrderAPI(option);
             if (order_err) return this.$toast('创建订单失败');
+
+            // 重新请求购物车信息
+            this.getCartGoodsList();
+
             if (order_data.code == 1) {
                 // 库存不足
                 this.$notify({
