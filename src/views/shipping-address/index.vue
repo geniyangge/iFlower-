@@ -3,8 +3,9 @@
     <div id="address">
         <!-- 标题栏 -->
         <div class="title">
-            <van-nav-bar :title="fromClearing ? '选择收货地址' : '收货地址'" left-arrow :right-text="fromClearing ? '确定' : null"
-                @click-left="$router.back()" @click-right="commitInfo" :border="false" />
+            <van-nav-bar :title="fromClearing ? '选择收货地址' : '收货地址'" left-arrow
+                :right-text="fromClearing && Object.keys(defaultAddress).length ? '确定' : null" @click-left="$router.back()"
+                @click-right="commitInfo" :border="false" />
         </div>
 
         <!-- 用户收货地址列表 -->

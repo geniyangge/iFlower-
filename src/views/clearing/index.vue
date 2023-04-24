@@ -24,8 +24,11 @@
                     <!-- 点击收货信息，携带原有的query前往地址列表页 -->
                     <van-cell required center value-class="addressInfo" title="收货信息" value="内容" is-link
                         :to="{ path: '/address', query: { goodsInfo: $route.query.goodsInfo } }">
-                        <p class="van-ellipsis">{{ addressInfo.name }}&nbsp;{{ addressInfo.tel }}</p>
-                        <p class="van-ellipsis">{{ addressInfo.address }}&nbsp;{{ addressInfo.desc }}</p>
+                        <template v-if="Object.keys(defaultAddress).length">
+                            <p class="van-ellipsis">{{ addressInfo.name }}&nbsp;{{ addressInfo.tel }}</p>
+                            <p class="van-ellipsis">{{ addressInfo.address }}&nbsp;{{ addressInfo.desc }}</p>
+                        </template>
+                        <p class="van-ellipsis" v-else>请选择收货地址</p>
                     </van-cell>
                     <van-cell title="送达日期" value="内容" is-link />
                     <van-cell title="配送时间" value="内容" is-link />

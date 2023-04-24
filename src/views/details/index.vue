@@ -19,17 +19,20 @@
         <!-- 主体 -->
         <main v-else>
             <!-- 商品轮播图 -->
-            <div class="swiper">
-                <van-swipe :autoplay="3000">
-                    <van-swipe-item v-for="(image, index) in goodDesc.img" :key="index">
-                        <img v-lazy="image.path" />
-                    </van-swipe-item>
-                    <!-- 测试用，下面可删,<van-swipe-item> -->
-                    <van-swipe-item v-for="(image, index) in goodDesc.img" :key="Math.random()">
-                        <img v-lazy="image.path" />
-                    </van-swipe-item>
-                </van-swipe>
-            </div>
+            <van-skeleton :row="13" :loading="skeletonLoading">
+                <div class="swiper">
+                    <van-swipe :autoplay="3000">
+                        <van-swipe-item v-for="(image, index) in goodDesc.img" :key="index">
+                            <img v-lazy="image.path" />
+                        </van-swipe-item>
+                        <!-- 测试用，下面可删,<van-swipe-item> -->
+                        <van-swipe-item v-for="(image, index) in goodDesc.img" :key="Math.random()">
+                            <img v-lazy="image.path" />
+                        </van-swipe-item>
+                    </van-swipe>
+                </div>
+            </van-skeleton>
+
             <!-- 商品介绍 -->
             <div class="desc">
                 <!-- 商品名称 -->
@@ -140,6 +143,8 @@ export default {
         return {
             // loading
             loading: true,
+            // 骨架屏Loading
+            skeletonLoading: true,
             // 要购买的商品数量
             goodNumber: 1,
             // 商品id
@@ -272,6 +277,11 @@ export default {
 
         // 取消loading
         this.loading = false;
+        let timer = setTimeout(() => {
+            this.skeletonLoading = false;
+            clearTimeout(timer);
+        }, 400);
+
     },
 };
 </script>

@@ -8,7 +8,7 @@
 
     <div id="userAddressList">
         <!-- 默认地址 -->
-        <template v-if="defaultAddress" v-cloak>
+        <template v-if="Object.keys(defaultAddress).length" v-cloak>
             <van-swipe-cell>
                 <van-cell clickable style="margin-top: 1.3333vw;"
                     @click="fromClearing ? saveAddressInfo(defaultAddress.id) : toEditAddress({ item: defaultAddress, isDefault: true })">
@@ -89,14 +89,14 @@ export default {
     data() {
         return {
             // 选中地址id(默认选中 默认地址)
-            chosedAddressId: this.defaultAddress.id,
+            chosedAddressId: this.defaultAddress?.id,
         };
     },
     props: {
         // 用户收货地址列表
         userAddressList: {
             type: Array,
-            default: () => { },
+            default: () => [],
         },
         // 默认收货地址
         defaultAddress: {

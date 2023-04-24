@@ -154,8 +154,8 @@ export default {
             }
             // 重新请求收货列表
             await getUserAddressList();
-            // 跳转到收货地址列表页
-            this.$router.replace('/address');
+            // 返回上一页
+            this.$router.back();
         },
         // 删除用户收货地址信息
         async deleteUserAddresss(id) {
@@ -170,8 +170,8 @@ export default {
             await this.deleteUserAddresss(this.id);
             // 重新获取地址列表
             await getUserAddressList();
-            // 跳转到地址列表页
-            this.$router.replace('/address');
+            // 返回上一页
+            this.$router.back();
         }
     },
 };
