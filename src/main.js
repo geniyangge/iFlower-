@@ -6,6 +6,9 @@ import store from './store';
 import '@/assets/styles/scss/reset.scss';
 // 按需引入vant组件
 import '@/utils/vant/index.js';
+// 引入lodash
+import _ from 'lodash';
+Vue.prototype._ = _;
 
 
 Vue.config.productionTip = false;

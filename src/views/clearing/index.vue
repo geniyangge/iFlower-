@@ -325,6 +325,8 @@ export default {
                     // 确认关闭
                     // 停止支付状态轮询
                     clearInterval(this.timerId);
+                    // 跳转到订单页
+                    this.$router.replace('/order');
                 })
                 .catch(() => {
                     // 取消关闭

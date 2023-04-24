@@ -164,7 +164,7 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
-// // 全局后置路由守卫
+// 全局后置路由守卫
 router.afterEach((to, from, next) => {
   window.scrollTo(0, 0);
 });
