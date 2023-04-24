@@ -133,6 +133,36 @@ const routes = [
       required: true,
     },
   },
+  // 设置页
+  {
+    path: '/setting',
+    name: 'Setting',
+    component: () => import('@/views/setting/index.vue'),
+    meta: {
+      // 需要登录
+      required: true,
+    }
+  },
+  // 个人资料页
+  {
+    path: '/personalData',
+    name: 'PersonalData',
+    component: () => import('@/views/setting/personalData.vue'),
+    meta: {
+      // 需要登录
+      required: true,
+    }
+  },
+  // 修改密码页
+  {
+    path: '/changePassword',
+    name: 'ChangePassword',
+    component: () => import('@/views/setting/changePassword.vue'),
+    meta: {
+      // 需要登录
+      required: true,
+    }
+  },
 ];
 
 const router = new VueRouter({

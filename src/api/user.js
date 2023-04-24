@@ -43,7 +43,7 @@ export async function updateUserInfoAPI(data) {
         message: '请先登录',
         duration: 2000,
     });
-    let id = data.id.toString();
+    let id = data.id;
     delete data.id;
     // 请求头携带登录令牌
     const headers = {

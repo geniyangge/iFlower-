@@ -63,6 +63,17 @@ export default new Vuex.Store({
       state.cartGoodsList = null;
       sessionStorage.removeItem('cartGoodsList');
     },
+    // 更新用户信息
+    updateUserInfo(state, newInfo) {
+      state.userInfo.id = newInfo.id; // 用户id
+      state.userInfo.name = newInfo.name; // 用户名
+      state.userInfo.phone = newInfo.phone; // 用户电话
+      state.userInfo.sex = newInfo.sex; // 用户性别
+      state.userInfo.birth_date = newInfo.birth_date; // 用户生日
+      state.userInfo.header_img = newInfo.header_img; // 用户头像
+      // 保存到localStorage
+      localStorage.setItem('userInfo', JSON.stringify(state.userInfo));
+    },
     // 保存用户收货地址信息
     saveUserAddressInfo(state, { defaultAddress, userAddressList }) {
       // 保存到vuex

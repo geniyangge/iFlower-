@@ -22,7 +22,7 @@
             <div class="module shippingInfo">
                 <van-cell-group inset>
                     <!-- 点击收货信息，携带原有的query前往地址列表页 -->
-                    <van-cell center value-class="addressInfo" title="收货信息" value="内容" is-link
+                    <van-cell required center value-class="addressInfo" title="收货信息" value="内容" is-link
                         :to="{ path: '/address', query: { goodsInfo: $route.query.goodsInfo } }">
                         <p class="van-ellipsis">{{ addressInfo.name }}&nbsp;{{ addressInfo.tel }}</p>
                         <p class="van-ellipsis">{{ addressInfo.address }}&nbsp;{{ addressInfo.desc }}</p>

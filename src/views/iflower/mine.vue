@@ -47,7 +47,7 @@
                 <van-cell-group inset>
                     <van-cell icon="balance-pay" title="优惠券" is-link />
                     <van-cell icon="guide-o" title="收货地址" is-link to="/address" />
-                    <van-cell icon="setting-o" title="设置" is-link />
+                    <van-cell icon="setting-o" title="设置" is-link to="/setting" />
                 </van-cell-group>
             </div>
         </main>
@@ -87,7 +87,6 @@ export default {
                     this.$router.go(0);
                 },
             });
-
         },
     },
     mounted() {
