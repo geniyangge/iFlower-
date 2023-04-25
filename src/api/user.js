@@ -44,7 +44,6 @@ export async function updateUserInfoAPI(data) {
         duration: 2000,
     });
     let id = data.id;
-    delete data.id;
     // 请求头携带登录令牌
     const headers = {
         // 登录令牌

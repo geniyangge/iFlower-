@@ -237,7 +237,7 @@ export default {
                     duration: 2000,
                 });
                 // 跳转到登录页
-                this.$router.push('/login');
+                this.$router.replace({ path: '/login', query: { toPath: encodeURI(this.$route.fullPath) } });
                 return;
             }
 

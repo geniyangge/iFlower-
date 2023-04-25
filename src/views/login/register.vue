@@ -30,10 +30,10 @@ export default {
         return {
             // 表单数据
             registerForm: {
-                phone: '13412341234',
-                name: 'younger',
-                password: '123456',
-                againPassword: '123456',
+                phone: '',
+                name: '',
+                password: '',
+                againPassword: '',
             },
         };
     },
@@ -55,6 +55,8 @@ export default {
                 if (err) return;
                 // 注册成功
                 Toast.success(data.msg);
+                // 跳转到登录页面
+                this.$router.replace('/login');
             }).catch(err => {
                 // 验证失败
                 let msg = err[0].message || '请输入' + err[0].name;

@@ -28,7 +28,7 @@
                     <van-field required v-model="formData.name" name="用户名" label="用户名" placeholder="请输入用户名"
                         :rules="[{ required: true, message: '请输入用户名' }]" />
                     <!-- 手机 -->
-                    <van-field required v-model="formData.phone" name="手机号" label="手机号" placeholder="请输入手机号"
+                    <van-field disabled v-model="formData.phone" name="手机号" label="手机号" placeholder="请输入手机号"
                         :rules="[{ required: true, message: '请输入手机号' }]" />
                     <!-- 性别 -->
                     <van-field name="性别" label="性别">
@@ -114,12 +114,19 @@ export default {
         },
         // 提交表单
         onSubmit() {
-            // console.log(this.formData);
             // 表单校验
             this.$refs.personalForm.validate()
                 .then(async () => {
                     // 请求更新用户信息
                     let [data, err] = await updateUserInfoAPI(this.formData);
+                    if (err?.response?.data?.msg === 'Validation error') {
+                        this.$toast.fail('操作失败');
+                        this.$notify({
+                            type: 'danger',
+                            message: '用户名已存在',
+                            duration: 2000,
+                        });
+                    }
                     if (err) return this.$toast.fail('操作失败');
                     // 请求成功
                     // console.log(data);
@@ -128,10 +135,12 @@ export default {
                     this.$toast.success('操作成功');
                 })
                 .catch(err => {
+                    console.log('setting/personalData.vue --> onSubmit()', err);
                     // 提示信息
                     this.$notify({
                         type: 'danger',
-                        message: err[0].message,
+                        // message: err[0].message,
+                        message: '未知错误',
                         duration: 1500,
                     });
                 });
