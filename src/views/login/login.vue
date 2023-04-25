@@ -32,6 +32,8 @@ import { Notify } from 'vant';
 import { Toast } from 'vant';
 // 引入vuex
 import { mapMutations, mapState, mapActions } from 'vuex';
+// 引入md5
+import md5 from 'md5';
 
 export default {
     name: 'Login',
@@ -52,6 +54,10 @@ export default {
     },
     computed: {
         ...mapState(['cityList']),
+        // md5加密 密码
+        md5Password() {
+            return md5(this.loginForm.password);
+        },
     },
     methods: {
         ...mapActions(['getCartGoodsList']),
@@ -76,11 +82,18 @@ export default {
         login() {
             // 表单验证
             this.$refs.loginForm.validate().then(async res => {
+                // 请求配置项
+                let option = {
+                    phone: this.loginForm.phone,
+                    password: this.md5Password,
+                };
                 // 验证成功,发送请求
-                let [data, err] = await userLoginAPI(this.loginForm);
+                let [data, err] = await userLoginAPI(option);
                 if (err) return;
                 // 登录成功
                 Toast.success('登录成功');
+                // 保存md5 密码到localStorage，用于修改密码时校验
+                localStorage.setItem('cynthia', this.md5Password);
                 // 保存用户信息到vuex和localStorage
                 await this.addUserInfo(data.result);
                 // 请求用户收货地址信息
