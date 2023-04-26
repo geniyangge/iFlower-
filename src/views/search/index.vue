@@ -27,7 +27,7 @@
             <!-- 关键词 -->
             <div class="keys">
                 <template v-for="hot in hotGoodsList">
-                    <div class="key">
+                    <div class="key" @click="toGoodDetails(hot.id)">
                         <p>{{ hot.name }}</p>
                     </div>
                 </template>
@@ -61,7 +61,11 @@ export default {
             }
             // 携带搜索信息，跳转到搜索结果页
             this.$router.push({ name: 'SearchResult', query: { key: this.searchValue, title: this.searchValue } });
-        }
+        },
+        // 携带商品id，前往商品详情页
+        toGoodDetails(id) {
+            this.$router.push({ path: '/details', query: { id } });
+        },
     },
     async created() {
         if (this.hotGoodsList === null) {

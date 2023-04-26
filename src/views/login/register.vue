@@ -6,10 +6,10 @@
                 :rules="[{ required: true }]" />
             <van-field center required v-model="registerForm.name" name="用户名" label="用户名" placeholder="请输入用户名"
                 :rules="[{ required: true }]" />
-            <van-field center required v-model="registerForm.password" name="密码" label="密码" placeholder="请输入密码"
-                :rules="[{ required: true }]" />
-            <van-field center required v-model="registerForm.againPassword" name="确认密码" label="确认密码" placeholder="请再次输入密码"
-                :rules="[{ required: true }, { validator, message: '两次输入的密码不一致' }]" />
+            <van-field center required v-model="registerForm.password" type="password" name="密码" label="密码"
+                placeholder="请输入密码" :rules="[{ required: true }]" />
+            <van-field center required v-model="registerForm.againPassword" type="password" name="确认密码" label="确认密码"
+                placeholder="请再次输入密码" :rules="[{ required: true }, { validator, message: '两次输入的密码不一致' }]" />
             <div class="loginBtn">
                 <van-button round block type="info" native-type="button" @click="register">注册</van-button>
             </div>
@@ -24,18 +24,26 @@ import { userRegisterAPI } from '@/api/user.js';
 // 引入vant组件
 import { Notify } from 'vant';
 import { Toast } from 'vant';
+// 引入md5
+import md5 from 'md5';
+
 export default {
     name: 'Register',
     data() {
         return {
             // 表单数据
             registerForm: {
-                phone: '13412341234',
-                name: 'younger',
-                password: '123456',
-                againPassword: '123456',
+                phone: '',
+                name: '',
+                password: '',
+                againPassword: '',
             },
         };
+    },
+    computed: {
+        md5Password() {
+            return md5(this.registerForm.againPassword);
+        }
     },
     methods: {
         switchMode() {
@@ -50,11 +58,21 @@ export default {
         register() {
             // 表单验证
             this.$refs.registerForm.validate().then(async res => {
-                // 验证成功,发送请求
-                let [data, err] = await userRegisterAPI(this.registerForm);
+                // 验证成功
+
+                // 请求配置项
+                let option = {
+                    phone: this.registerForm.phone,
+                    name: this.registerForm.name,
+                    password: this.md5Password,
+                };
+                // 发送请求
+                let [data, err] = await userRegisterAPI(option);
                 if (err) return;
                 // 注册成功
                 Toast.success(data.msg);
+                // 跳转到登录页面
+                this.$router.replace('/login');
             }).catch(err => {
                 // 验证失败
                 let msg = err[0].message || '请输入' + err[0].name;

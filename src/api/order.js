@@ -20,12 +20,49 @@ export async function addOrderAPI(data) {
     // 请求头携带登录令牌
     const headers = {
         // 登录令牌
-        "x-token": store.state.userInfo ? store.state.userInfo?.token : null,
+        "x-token": store.getters.token,
     };
     return await myAxios({
         method: 'post',
         url: '/order',
         headers,
         data,
+    });
+}
+
+/**
+ * 获取订单列表
+ *  - get请求
+ */
+export async function getOrderListAPI(params) {
+    params = { ...{ project_id }, ...params };
+    // 请求头携带登录令牌
+    const headers = {
+        // 登录令牌
+        "x-token": store.getters.token,
+    };
+    return await myAxios({
+        method: 'get',
+        url: '/order',
+        headers,
+        params,
+    });
+}
+
+/**
+ * 删除订单
+ *  - delete请求
+ */
+export async function deleteOrderAPI(id) {
+    if (!id) return;
+    // 请求头携带登录令牌
+    const headers = {
+        // 登录令牌
+        "x-token": store.getters.token,
+    };
+    return await myAxios({
+        method: 'delete',
+        url: '/order/' + id,
+        headers,
     });
 }

@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+// 引入api
+import { getUserCartInfo } from '@/api/cart.js';
+
 
 Vue.use(Vuex);
 
@@ -20,14 +23,18 @@ export default new Vuex.Store({
     swiperList: JSON.parse(localStorage.getItem('swiperList') || null),
     // 首页分类及其商品信息
     sortGoodsList: JSON.parse(localStorage.getItem('sortGoodsList') || null),
-    // 所有商品分类信息
-    allSortList: JSON.parse(localStorage.getItem('allSortList') || null),
+    // 所有商品分类信息(必须是个数组)
+    allSortList: JSON.parse(localStorage.getItem('allSortList') || null) || [],
     // 热门商品列表
     hotGoodsList: JSON.parse(localStorage.getItem('hotGoodsList') || null),
     // 用户购物车商品列表(必须是个数组)
-    cartGoodsList: JSON.parse(localStorage.getItem('cartGoodsList') || null) || [],
+    cartGoodsList: JSON.parse(sessionStorage.getItem('cartGoodsList') || null) || [],
   },
   getters: {
+    // 登录令牌
+    token(state) {
+      return state.userInfo ? state.userInfo?.token : null;
+    },
   },
   mutations: {
     // 控制底部Tabbar的显示与隐藏
@@ -43,14 +50,29 @@ export default new Vuex.Store({
     },
     // 删除用户信息
     removeUserInfo(state) {
+      // 删除用户登录信息
       state.userInfo = null;
-      state.defaultAddress = null;
-      state.userAddressList = null;
-      state.cartGoodsList = null;
       localStorage.removeItem('userInfo');
+      // 删除默认收货地址
+      state.defaultAddress = null;
       localStorage.removeItem('defaultAddress');
+      // 删除用户收货地址列表
+      state.userAddressList = null;
       localStorage.removeItem('userAddressList');
-      localStorage.removeItem('cartGoodsList');
+      // 删除购物车商品信息
+      state.cartGoodsList = null;
+      sessionStorage.removeItem('cartGoodsList');
+    },
+    // 更新用户信息
+    updateUserInfo(state, newInfo) {
+      state.userInfo.id = newInfo.id; // 用户id
+      state.userInfo.name = newInfo.name; // 用户名
+      state.userInfo.phone = newInfo.phone; // 用户电话
+      state.userInfo.sex = newInfo.sex; // 用户性别
+      state.userInfo.birth_date = newInfo.birth_date; // 用户生日
+      state.userInfo.header_img = newInfo.header_img; // 用户头像
+      // 保存到localStorage
+      localStorage.setItem('userInfo', JSON.stringify(state.userInfo));
     },
     // 保存用户收货地址信息
     saveUserAddressInfo(state, { defaultAddress, userAddressList }) {
@@ -89,10 +111,34 @@ export default new Vuex.Store({
     // 保存用户购物车商品列表
     SaveCartGoodsList(state, cartGoodsList) {
       state.cartGoodsList = cartGoodsList;
-      localStorage.setItem('cartGoodsList', JSON.stringify(cartGoodsList));
+      sessionStorage.setItem('cartGoodsList', JSON.stringify(cartGoodsList));
     },
   },
   actions: {
+    // 请求购物车商品列表(页面进入时调用、购物车商品变化时调用)
+    async getCartGoodsList({ commit }) {
+      // 获取购物车信息
+      let [cartInfo, err] = await getUserCartInfo();
+      if (err) return;
+      // console.log(cartInfo.result);
+
+      // 保存购物车商品信息
+      let cartGoodsList = cartInfo.result.map(g => {
+        let temp = {
+          id: g.id,   // 购物车商品ID
+          goods_id: g.goods_id,   // 商品ID
+          name: g.s_good.name,   // 购物车商品名称
+          num: g.num,   // 购物车商品数量
+          price: g.s_good.price,   // 购物车商品价格
+          sale_price: g.s_good.sale_price,   // 购物车商品优惠价格
+          img: g.s_good.s_goods_photos[0].path,   // 购物车商品图片
+        };
+        return temp;
+      });
+
+      // 保存到vuex
+      commit('SaveCartGoodsList', cartGoodsList);
+    }
   },
   modules: {
   }

@@ -93,8 +93,8 @@ export default {
             }
             // 重新请求收货列表
             await getUserAddressList();
-            // 跳转到收货地址列表页
-            this.$router.replace('/address');
+            // 跳转到上一页
+            this.$router.back();
         },
     },
 };

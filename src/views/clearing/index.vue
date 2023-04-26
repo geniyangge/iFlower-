@@ -22,10 +22,13 @@
             <div class="module shippingInfo">
                 <van-cell-group inset>
                     <!-- 点击收货信息，携带原有的query前往地址列表页 -->
-                    <van-cell center value-class="addressInfo" title="收货信息" value="内容" is-link
+                    <van-cell required center value-class="addressInfo" title="收货信息" value="内容" is-link
                         :to="{ path: '/address', query: { goodsInfo: $route.query.goodsInfo } }">
-                        <p class="van-ellipsis">{{ addressInfo.name }}&nbsp;{{ addressInfo.tel }}</p>
-                        <p class="van-ellipsis">{{ addressInfo.address }}&nbsp;{{ addressInfo.desc }}</p>
+                        <template v-if="Object.keys(defaultAddress).length">
+                            <p class="van-ellipsis">{{ addressInfo.name }}&nbsp;{{ addressInfo.tel }}</p>
+                            <p class="van-ellipsis">{{ addressInfo.address }}&nbsp;{{ addressInfo.desc }}</p>
+                        </template>
+                        <p class="van-ellipsis" v-else>请选择收货地址</p>
                     </van-cell>
                     <van-cell title="送达日期" value="内容" is-link />
                     <van-cell title="配送时间" value="内容" is-link />
@@ -161,7 +164,7 @@ import { getUserAddressList, getAddressByIdAPI } from '@/api/address';
 import { addOrderAPI } from '@/api/order';
 import { createPaymentAPI, queryPaymentAPI } from '@/api/payment';
 // 引入vuex
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 // 引入QRCode
 import QRCode from 'qrcode';
 
@@ -233,6 +236,7 @@ export default {
         },
     },
     methods: {
+        ...mapActions(['getCartGoodsList']),
         // 提交订单
         async onSubmit() {
             let option = {
@@ -243,6 +247,10 @@ export default {
             // 创建订单
             let [order_data, order_err] = await addOrderAPI(option);
             if (order_err) return this.$toast('创建订单失败');
+
+            // 重新请求购物车信息
+            this.getCartGoodsList();
+
             if (order_data.code == 1) {
                 // 库存不足
                 this.$notify({
@@ -320,6 +328,8 @@ export default {
                     // 确认关闭
                     // 停止支付状态轮询
                     clearInterval(this.timerId);
+                    // 跳转到订单页
+                    this.$router.replace('/order');
                 })
                 .catch(() => {
                     // 取消关闭

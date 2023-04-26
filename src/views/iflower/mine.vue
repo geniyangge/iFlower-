@@ -34,10 +34,10 @@
                 <van-cell-group inset>
                     <van-cell title="我的订单" value="全部订单" is-link to="/order" />
                     <van-grid :border="false" clickable>
-                        <van-grid-item icon="todo-list-o" text="待付款" />
-                        <van-grid-item icon="logistics" text="派送中" />
-                        <van-grid-item icon="smile-comment-o" text="待评价" />
-                        <van-grid-item icon="completed" text="已完成" />
+                        <van-grid-item icon="todo-list-o" text="待付款" to="/order?filterMode=1" />
+                        <van-grid-item icon="logistics" text="已发货" to="/order?filterMode=3" />
+                        <van-grid-item icon="smile-comment-o" text="退款中" to="/order?filterMode=5" />
+                        <van-grid-item icon="completed" text="已完成" to="/order?filterMode=6" />
                     </van-grid>
                 </van-cell-group>
             </div>
@@ -47,7 +47,7 @@
                 <van-cell-group inset>
                     <van-cell icon="balance-pay" title="优惠券" is-link />
                     <van-cell icon="guide-o" title="收货地址" is-link to="/address" />
-                    <van-cell icon="setting-o" title="设置" is-link />
+                    <van-cell icon="setting-o" title="设置" is-link to="/setting" />
                 </van-cell-group>
             </div>
         </main>
@@ -87,7 +87,6 @@ export default {
                     this.$router.go(0);
                 },
             });
-
         },
     },
     mounted() {

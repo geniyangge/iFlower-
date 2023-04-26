@@ -127,11 +127,24 @@ export async function getAddressByIdAPI(id) {
 
 //  获取用户收货地址列表 和 默认收货地址
 export async function getUserAddressList() {
-    let [data1, err1] = await getDefaultAddressAPI();
-    let [data2, err2] = await getUserAddressAPI();
-    if (err1 || err2) return;
-    let defaultAddress = data1.result || null;
-    let userAddressList = data2.result.filter(address => address.default_set !== '1');
+    let userAddressList = [];    // 所有收货地址（除默认地址的一个数组）
+    let defaultAddress = {};     // 默认地址(一定是个对象)
+
+    // 请求用户收货地址列表
+    let [all_data, all_err] = await getUserAddressAPI();
+    if (all_err) return;
+    if (all_data.result.length === 0) {
+        // 地址列表为空的时候，不请求默认地址
+        // 保存到vuex 和 localStorage
+        store.commit('saveUserAddressInfo', { defaultAddress, userAddressList });
+        return;
+    }
+
+    // 地址列表不为空的时候，请求默认地址
+    let [default_data, default_err] = await getDefaultAddressAPI();
+    if (default_err) return;
+    defaultAddress = default_data.result || {};
+    userAddressList = all_data.result.filter(address => address.default_set !== '1' && address.id !== defaultAddress.id);
     // 保存到vuex 和 localStorage
     store.commit('saveUserAddressInfo', { defaultAddress, userAddressList });
 }

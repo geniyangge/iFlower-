@@ -6,7 +6,7 @@
             <div class="good" :class="{ round }" @click="$router.push({ name: 'Details', query: { id: good.id } })">
                 <!-- 商品图片 -->
                 <div class="goodImg">
-                    <img :src="good.img" :alt="good.name">
+                    <van-image :src="good.img" :alt="good.name" />
                 </div>
                 <!-- 商品文字 -->
                 <div class="goodText">

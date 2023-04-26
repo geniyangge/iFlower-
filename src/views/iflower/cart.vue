@@ -32,7 +32,7 @@
                                 </div>
                                 <!-- 商品图片 -->
                                 <div class="goodImg">
-                                    <img :src="good.img" :alt="good.name">
+                                    <van-image :src="good.img" :alt="good.name" />
                                 </div>
                                 <!-- 商品信息 -->
                                 <div class="goodInfo">
@@ -88,7 +88,7 @@
 
 <script>
 // 引入vuex
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 // 引入API
 import { saveHotGoods } from '@/api/goods';
 import { getUserCartInfo, deleteCartGood } from '@/api/cart';
@@ -117,10 +117,13 @@ export default {
         };
     },
     computed: {
-        ...mapState(['hotGoodsList', 'cartGoodsList']),
+        ...mapState(['userInfo', 'hotGoodsList', 'cartGoodsList']),
         // 购物车是否有商品
         hasGoods() {
-            return Boolean(this.cartGoodsList.length);
+            let hasGoods = Boolean(this.cartGoodsList.length);
+            // 根据购物车是否存在商品，来控制Tabbar的隐藏和显示
+            this.showTabbar(!hasGoods);
+            return hasGoods;
         },
         // 全选
         allSelect: {
@@ -133,6 +136,7 @@ export default {
         },
     },
     methods: {
+        ...mapActions(['getCartGoodsList']),
         ...mapMutations(['showTabbar']),
         // 任意复选框状态改变时触发
         checkedChange(selectedList) {
@@ -161,7 +165,10 @@ export default {
                     let [data, err] = await deleteCartGood(id);
                     if (err) return;
                     this.$toast.success('删除成功');
-                    this.$router.go(0);
+                    // 请求新的购物车商品数据
+                    await this.getCartGoodsList();
+                    // 刷新页面
+                    // this.$router.go(0);
                 })
                 .catch(() => {
                 });
@@ -201,6 +208,12 @@ export default {
         },
     },
     async created() {
+        // 获取购物车商品列表
+        if (this.userInfo && sessionStorage.getItem('cartGoodsList') === null) {
+            // 如果数据不存在，请求一次
+            await this.getCartGoodsList();
+        }
+
         // 获取商品信息
         if (this.hotGoodsList === null || this.guessYouLikeGoods === null) {
             // 数据不存在，请求一次

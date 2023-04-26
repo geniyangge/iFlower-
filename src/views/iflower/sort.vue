@@ -30,11 +30,11 @@
                 </div>
                 <!-- 板块 -->
                 <div class="part">
-                    <h1>{{ selectedSort.title }}</h1>
+                    <h1>{{ selectedSort?.title }}</h1>
                     <div class="partContent">
                         <van-grid :column-num="2" :border="false">
                             <!-- 这里对选中类的子集，进行v-for渲染 -->
-                            <template v-for="scdSort in selectedSort.children">
+                            <template v-for="scdSort in (selectedSort?.children || [])">
                                 <van-grid-item :text="scdSort.title"
                                     :to="{ name: 'SearchResult', query: { title: scdSort.title, classifyID: scdSort.id } }" />
                             </template>
@@ -70,7 +70,7 @@ export default {
         },
     },
     async created() {
-        if (this.allSortList === null) {
+        if (localStorage.getItem('allSortList') === null) {
             // 如果没有数据，就请求一次
             await saveAllSort();
         }
