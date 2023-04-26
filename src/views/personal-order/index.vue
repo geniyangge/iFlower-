@@ -274,10 +274,19 @@ export default {
         },
         // 删除订单
         async deleteOrder(id) {
-            let [data, err] = await deleteOrderAPI(id);
-            if (err) return this.$toast.fail('删除失败');
-            this.$toast.success('删除成功');
-            this.$router.go(0);
+            this.$dialog.confirm({
+                message: '确认删除这条订单信息吗？',
+            })
+                .then(async () => {
+                    // 确认删除
+                    let [data, err] = await deleteOrderAPI(id);
+                    if (err) return this.$toast.fail('删除失败');
+                    this.$toast.success('删除成功');
+                    this.$router.go(0);
+                })
+                .catch(() => {
+                    // 取消删除
+                });
         },
         // 默认排序
         sortByDefault() {
