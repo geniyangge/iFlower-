@@ -50,6 +50,23 @@ export async function getOrderListAPI(params) {
 }
 
 /**
+ * 获取订单单条信息
+ *  - get请求
+ */
+export async function getOrderAPI(id) {
+    // 请求头携带登录令牌
+    const headers = {
+        // 登录令牌
+        "x-token": store.getters.token,
+    };
+    return await myAxios({
+        method: 'get',
+        url: '/order/' + id,
+        headers,
+    });
+}
+
+/**
  * 删除订单
  *  - delete请求
  */

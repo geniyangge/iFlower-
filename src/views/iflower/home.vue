@@ -125,7 +125,7 @@
                         </div>
                         <!-- 查看更多 -->
                         <div class="lookMore">
-                            <div class="more" @click="toGoodDesc">
+                            <div class="more" @click="toGoodDesc(sort)">
                                 <h2>查看更多</h2>
                             </div>
                         </div>
@@ -243,9 +243,9 @@ export default {
             // 跳转到搜索页
             this.$router.push('/search');
         },
-        // 点击查看更多，跳转到商品详情页
-        toGoodDesc() {
-            console.log('iflower/home.vue', '功能开发中~');
+        // 点击查看更多，跳转到搜索结果页
+        toGoodDesc(sort) {
+            this.$router.push({ path: '/searchResult', query: { title: sort.title, classifyID: sort.id } });
         },
     },
     async created() {

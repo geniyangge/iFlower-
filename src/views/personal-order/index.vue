@@ -42,7 +42,7 @@
                                     </template>
                                 </van-cell>
                                 <!-- 商品卡片 -->
-                                <van-cell>
+                                <van-cell @click="toOrderDetails(order.id)" clickable>
                                     <template v-for="good in order.goods_info">
                                         <van-card :num="good.num" :price="good.sale_price" :origin-price="good.price"
                                             desc="七天无理由退货" :title="good.goods_name" :thumb="good.s_goods_photos[0].path" />
@@ -55,10 +55,10 @@
                                     </template>
                                     <template #right-icon>
                                         <!-- 去支付 -->
-                                        <van-button round size="mini" @click="payOrder(order.order_id)"
+                                        <van-button round size="mini" @click.stop="payOrder(order.order_id)"
                                             v-if="order.status === '1'">去支付</van-button>
                                         <!-- 删除订单 -->
-                                        <van-button round size="mini" @click="deleteOrder(order.id)">删除订单</van-button>
+                                        <van-button round size="mini" @click.stop="deleteOrder(order.id)">删除订单</van-button>
                                     </template>
                                 </van-cell>
                             </van-cell-group>
@@ -214,6 +214,10 @@ export default {
             this.renderOrderList = this._.cloneDeep(this.orderList);
             // console.log(data);
             // console.log(JSON.parse(data.result.rows[0].goods_info));
+        },
+        // 携带订单id，前往订单详情
+        toOrderDetails(id) {
+            this.$router.push({ path: '/orderDetails', query: { id: id } });
         },
         // 订单列表触底触发加载
         async loadMore() {

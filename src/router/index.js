@@ -88,6 +88,16 @@ const routes = [
       required: true,
     },
   },
+  // 订单详情
+  {
+    path: '/orderDetails',
+    name: 'OrderDetails',
+    component: () => import('@/views/personal-order/orderDetails.vue'),
+    meta: {
+      // 需要登录
+      required: true,
+    },
+  },
   // 收货地址
   {
     path: '/address',
