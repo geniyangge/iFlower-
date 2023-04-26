@@ -44,7 +44,7 @@
                 </div>
             </div>
             <!-- 描述 -->
-            <div class="description">
+            <div class="description" v-if="goodSku.length">
                 <!-- 每个描述 -->
                 <template v-for="desc in goodSku">
                     <div class="goodDesc" v-if="desc">
@@ -182,29 +182,34 @@ export default {
                     let [[sku, err1], [desc, err2]] = res;
                     // 商品规格
                     // console.log(sku.result);
+                    // console.log(sku.result.stock_list.length);
                     // console.log(desc.result);
-                    // 获取规格码
-                    let skuCodes = sku.result.stock_list[0].goods_specs.split(",");
-                    // 遍历每类规格
-                    this.goodSku = sku.result.property.map(p => {
-                        // 根据规格码，筛选出需要的规格
-                        let sku = p.s_attributesValues.map(v => {
-                            if (skuCodes.includes(v.id.toString())) {
-                                return {
-                                    sku_value: v.attribute_value,
-                                };
-                            }
-                            return null;
+                    if (sku.result.stock_list.length) {
+                        // 如果存在商品规格信息
+                        // 获取规格码
+                        let skuCodes = sku.result.stock_list[0].goods_specs.split(",");
+                        // 遍历每类规格
+                        this.goodSku = sku.result.property.map(p => {
+                            // 根据规格码，筛选出需要的规格
+                            let sku = p.s_attributesValues.map(v => {
+                                if (skuCodes.includes(v.id.toString())) {
+                                    return {
+                                        sku_value: v.attribute_value,
+                                    };
+                                }
+                                return null;
+                            });
+                            // sku === [null,{},null]
+                            let property = sku.filter(v => v !== null);
+                            // // 如果此次没有需要的规格
+                            if (!property.length) return null;
+                            property = property[0];
+                            // property === {}
+                            property.name = p.keyName;
+                            return property;
                         });
-                        // sku === [null,{},null]
-                        let property = sku.filter(v => v !== null);
-                        // // 如果此次没有需要的规格
-                        if (!property.length) return null;
-                        property = property[0];
-                        // property === {}
-                        property.name = p.keyName;
-                        return property;
-                    });
+                    }
+
                     // 商品详细信息
                     this.goodDesc = {
                         id: desc.result.id,  // 商品ID
