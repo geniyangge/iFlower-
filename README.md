@@ -17,6 +17,7 @@ npm run serve
 ```
 npm run build
 ```
+### 项目目录结构
 
 ```
 iFlower
