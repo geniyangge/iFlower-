@@ -1,4 +1,4 @@
-# iflowershop ———— 基于 vue2.0 + vant-ui 的移动端订花商城
+# iflowershop —— 基于 vue2.0 + vant-ui 的移动端订花商城
 
 ## 安装项目依赖包 Project setup
 
