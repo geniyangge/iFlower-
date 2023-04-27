@@ -29,7 +29,7 @@
                                 <!-- 单选框 -->
                                 <div class="radio">
                                     <van-checkbox :name="good.id" shape="square" icon-size="3.7333vw"
-                                        :disabled="good.stock_num === 0" />
+                                        :disabled="good.stock_num === 0" :bind-group="good.stock_num" />
                                 </div>
                                 <!-- 商品图片 -->
                                 <div class="goodImg">
@@ -134,7 +134,12 @@ export default {
                 this.$refs.cartList.toggleAll(bool);
             },
             get() {
-                return this.cartGoodsList.length === this.selectedGoodsList.length;
+                // 缺货商品数量
+                let stockoutNum = this.cartGoodsList.reduce((a, b) => {
+                    if (b.stock_num === 0) return a + 1;
+                    return a;
+                }, 0);
+                return this.cartGoodsList.length - stockoutNum === this.selectedGoodsList.length;
             },
         },
     },
