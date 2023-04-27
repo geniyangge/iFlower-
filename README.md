@@ -17,6 +17,7 @@ npm run serve
 ```
 npm run build
 ```
+
 ### 项目目录结构
 
 ```
@@ -27,86 +28,6 @@ iFlower
 │  ├─ .env.development
 │  ├─ .env.production
 │  ├─ babel.config.js
-│  ├─ dist
-│  │  ├─ css
-│  │  │  ├─ 154.f1a698d5.css
-│  │  │  ├─ 309.161b3492.css
-│  │  │  ├─ 37.e950ce3d.css
-│  │  │  ├─ 391.041a6d5b.css
-│  │  │  ├─ 404.9ee24e02.css
-│  │  │  ├─ 413.a41931f6.css
-│  │  │  ├─ 463.359320f2.css
-│  │  │  ├─ 490.87f47236.css
-│  │  │  ├─ 546.c353f637.css
-│  │  │  ├─ 613.7a7d980c.css
-│  │  │  ├─ 637.4ab579c6.css
-│  │  │  ├─ 67.cfabb294.css
-│  │  │  ├─ 675.a6ca58d1.css
-│  │  │  ├─ 682.c12dadb5.css
-│  │  │  ├─ 745.34243b45.css
-│  │  │  ├─ 897.69a32bf5.css
-│  │  │  ├─ 898.01f753f2.css
-│  │  │  ├─ 899.fad6a03f.css
-│  │  │  ├─ 935.9e7ed103.css
-│  │  │  ├─ app.f5df7524.css
-│  │  │  └─ chunk-vendors.119c3cd9.css
-│  │  ├─ favicon.ico
-│  │  ├─ img
-│  │  │  ├─ 5.8695fbbd.webp
-│  │  │  ├─ 6.28e61201.webp
-│  │  │  ├─ banner.d8a0ea96.webp
-│  │  │  ├─ logo.f58906c9.webp
-│  │  │  └─ nothing.8a54289b.png
-│  │  ├─ index.html
-│  │  └─ js
-│  │     ├─ 154.1bcfd972.js
-│  │     ├─ 154.1bcfd972.js.map
-│  │     ├─ 309.117fc126.js
-│  │     ├─ 309.117fc126.js.map
-│  │     ├─ 37.257d1480.js
-│  │     ├─ 37.257d1480.js.map
-│  │     ├─ 391.2e62c2cd.js
-│  │     ├─ 391.2e62c2cd.js.map
-│  │     ├─ 404.3ff65ed6.js
-│  │     ├─ 404.3ff65ed6.js.map
-│  │     ├─ 413.2f6927cf.js
-│  │     ├─ 413.2f6927cf.js.map
-│  │     ├─ 463.5891b0eb.js
-│  │     ├─ 463.5891b0eb.js.map
-│  │     ├─ 490.e9dc8ab8.js
-│  │     ├─ 490.e9dc8ab8.js.map
-│  │     ├─ 546.c3da8371.js
-│  │     ├─ 546.c3da8371.js.map
-│  │     ├─ 613.11b91161.js
-│  │     ├─ 613.11b91161.js.map
-│  │     ├─ 637.2246ca2a.js
-│  │     ├─ 637.2246ca2a.js.map
-│  │     ├─ 67.da65f0a2.js
-│  │     ├─ 67.da65f0a2.js.map
-│  │     ├─ 675.c4d2cf61.js
-│  │     ├─ 675.c4d2cf61.js.map
-│  │     ├─ 682.3204070e.js
-│  │     ├─ 682.3204070e.js.map
-│  │     ├─ 745.c13b16a5.js
-│  │     ├─ 745.c13b16a5.js.map
-│  │     ├─ 786.f7308841.js
-│  │     ├─ 786.f7308841.js.map
-│  │     ├─ 797.3544193a.js
-│  │     ├─ 797.3544193a.js.map
-│  │     ├─ 826.ebd016bd.js
-│  │     ├─ 826.ebd016bd.js.map
-│  │     ├─ 897.0d5cd9be.js
-│  │     ├─ 897.0d5cd9be.js.map
-│  │     ├─ 898.e40c17e0.js
-│  │     ├─ 898.e40c17e0.js.map
-│  │     ├─ 899.0d40931a.js
-│  │     ├─ 899.0d40931a.js.map
-│  │     ├─ 935.9eaf1c03.js
-│  │     ├─ 935.9eaf1c03.js.map
-│  │     ├─ app.99f2bd33.js
-│  │     ├─ app.99f2bd33.js.map
-│  │     ├─ chunk-vendors.b95e0976.js
-│  │     └─ chunk-vendors.b95e0976.js.map
 │  ├─ jsconfig.json
 │  ├─ package-lock.json
 │  ├─ package.json
