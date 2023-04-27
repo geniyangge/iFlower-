@@ -217,6 +217,7 @@ export default {
                         price: desc.result.price,    // 商品价格
                         sale_price: desc.result.sale_price,   // 商品优惠价格
                         sold_num: desc.result.sold_num,    // 商品销量
+                        stock_num: desc.result.stock_num,    // 商品库存
                         img: desc.result.s_goods_photos,    // 商品图片
                         rich_text: desc.result.rich_text,   // 富文本
                     };
@@ -246,6 +247,11 @@ export default {
                 return;
             }
 
+            // 库存不足
+            if (this.goodDesc.stock_num === 0) {
+                return this.$toast.fail('库存不足');
+            }
+
             let option = {
                 goods_id: this.id, // 商品ID
                 num: this.goodNumber,  // 数量
@@ -258,6 +264,11 @@ export default {
         },
         // 点击立即购买
         buyNow() {
+            // 库存不足
+            if (this.goodDesc.stock_num === 0) {
+                return this.$toast.fail('库存不足');
+            }
+
             // 携带商品信息，跳转到商品结算页
             this.$router.push({
                 path: '/clearing',

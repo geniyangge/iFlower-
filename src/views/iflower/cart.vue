@@ -28,7 +28,8 @@
                             <div class="goodCard">
                                 <!-- 单选框 -->
                                 <div class="radio">
-                                    <van-checkbox :name="good.id" shape="square" icon-size="3.7333vw" />
+                                    <van-checkbox :name="good.id" shape="square" icon-size="3.7333vw"
+                                        :disabled="good.stock_num === 0" />
                                 </div>
                                 <!-- 商品图片 -->
                                 <div class="goodImg">
@@ -41,7 +42,9 @@
                                         <van-icon name="delete-o" @click="deleteItem(good.id)" />
                                     </div>
                                     <!-- 商品名称 -->
-                                    <h3>{{ good.name }}</h3>
+                                    <h3>{{ good.name }}<span v-if="good.stock_num === 0"
+                                            style="color: red;font-size: 12px;">（已售罄）</span>
+                                    </h3>
                                     <!-- 商品数量 -->
                                     <p class="text num">数量：&nbsp;x&nbsp;<span>{{ good.num }}</span></p>
                                     <!-- 市场价 -->
