@@ -132,6 +132,7 @@ export default new Vuex.Store({
           price: g.s_good.price,   // 购物车商品价格
           sale_price: g.s_good.sale_price,   // 购物车商品优惠价格
           img: g.s_good.s_goods_photos[0].path,   // 购物车商品图片
+          stock_num: g.s_good.stock_num, // 购物车商品库存量
         };
         return temp;
       });
