@@ -59,7 +59,7 @@
             </div>
             <!-- 数量 -->
             <div class="number">
-                <van-field name="stepper" label="数量">
+                <van-field name="stepper" :label="'数量（库存：' + goodDesc.stock_num + '）'">
                     <template #input>
                         <van-stepper v-model="goodNumber" input-width="13.3333vw" button-size="8.5333vw" />
                     </template>
@@ -157,6 +157,7 @@ export default {
                 name: '',  // 商品名称
                 price: 0,    // 商品价格
                 sale_price: 0,   // 商品优惠价格
+                stock_num: 0, // 商品库存
                 sold_num: 0,    // 商品销量
                 img: [],    // 商品图片
                 rich_text: '',  // 富文本
@@ -248,7 +249,7 @@ export default {
             }
 
             // 库存不足
-            if (this.goodDesc.stock_num === 0) {
+            if (this.goodNumber > this.goodDesc.stock_num) {
                 return this.$toast.fail('库存不足');
             }
 
@@ -265,7 +266,7 @@ export default {
         // 点击立即购买
         buyNow() {
             // 库存不足
-            if (this.goodDesc.stock_num === 0) {
+            if (this.goodNumber > this.goodDesc.stock_num) {
                 return this.$toast.fail('库存不足');
             }
 
@@ -467,7 +468,9 @@ export default {
                 ::v-deep .van-field__label {
                     color: #555;
                     font-size: vw(14);
-                    width: vw(60);
+                    width: fit-content;
+                    white-space: nowrap;
+                    margin-right: vw(10);
                 }
             }
         }
