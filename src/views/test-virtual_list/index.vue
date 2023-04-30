@@ -1,5 +1,6 @@
 <template>
     <!-- 商品搜索结果页（虚拟列表法） -->
+    <!-- 触底加载法见 views/iflower/searchResult.vue -->
     <div id="searchResult">
         <!-- 标题栏 -->
         <header>
@@ -47,11 +48,6 @@
             <template v-if="!loading">
                 <!-- 商品列表 -->
                 <div class="production" v-if="renderGoods && renderGoods.length">
-                    <!-- 触底加载列表 -->
-                    <!-- <van-list :immediate-check="false" v-model="listLoading" :finished="listFinished" finished-text="没有更多了"
-                        @load="onLoad">
-                        <GoodsList :goodsList="renderGoods" round />
-                    </van-list> -->
                     <VirtualList :listData="renderGoods" :itemHeight="246.5" :colNum="2" style="height: 100%;">
                     </VirtualList>
                 </div>
@@ -98,8 +94,6 @@
 </template>
 
 <script>
-// 引入商品列表组件
-import GoodsList from '@/components/goodsList.vue';
 // 引入虚拟列表组件
 import VirtualList from '@/components/virtual-list.vue';
 // 引入API
@@ -110,15 +104,12 @@ import { mapState } from 'vuex';
 
 export default {
     components: {
-        GoodsList,
         VirtualList,
     },
     data() {
         return {
             // 是否加载中
             loading: true,
-            // 触底加载中
-            listLoading: false,
             // 显示筛选框弹窗？
             showPopup: false,
             /**
@@ -140,7 +131,7 @@ export default {
             // 请求商品列表配置项
             reqOption: {
                 page: '1',  // 页码
-                limit: '100', // 每页条数
+                limit: '200', // 每页条数
                 classify_id: this.$route.query.classifyID || '',   // 分类ID
                 name: this.$route.query.key || '', // 模糊搜索关键词
             },
@@ -152,63 +143,12 @@ export default {
     },
     computed: {
         ...mapState(['allSortList']),
-        // 触底加载是否结束
+        // 判断数据是否请求完
         listFinished() {
             return this.goods.length === this.count;
         },
     },
     methods: {
-        // 综合
-        getByGeneral() {
-            this.chosedNav = 0;
-            // 拷贝原数据
-            this.renderGoods = this._.cloneDeep(this.goods);
-        },
-        // 销量
-        getBySales() {
-            this.chosedNav = 1;
-
-            // 根据销量进行排序
-            this.renderGoods.sort((a, b) => {
-                return b.sold_num - a.sold_num;
-            });
-        },
-        // 价格
-        getBySort(isChange) {
-            this.chosedNav = 2;
-
-            if (isChange) {
-                // 切换升/降序模式，只在点击按钮时进行切换
-                this.isSortDown = !this.isSortDown;
-                this.isSortUp = !this.isSortDown;
-            }
-
-            // 价格升序
-            if (this.isSortUp) {
-                this.renderGoods.sort((a, b) => {
-                    return a.price - b.price;
-                });
-            }
-            // 价格降序
-            if (this.isSortDown) {
-                this.renderGoods.sort((a, b) => {
-                    return b.price - a.price;
-                });
-            }
-        },
-        // 筛选
-        toFilter() {
-            this.showPopup = true;
-        },
-        // 排序
-        sortGoods() {
-            switch (this.chosedNav) {
-                case 0: this.getByGeneral(); break;
-                case 1: this.getBySales(); break;
-                case 2: this.getBySort(); break;
-                default: break;
-            }
-        },
         // 请求筛选后的商品列表
         async getGoods() {
             // 请求商品列表
@@ -237,14 +177,65 @@ export default {
             // 排序
             this.sortGoods();
         },
-        // 触底触发请求
-        async onLoad() {
-            this.reqOption.page++;
-            // 请求商品列表
-            await this.getGoods();
-            // 关闭触底加载中，下一次加载就绪
-            this.listLoading = false;
+        // 按综合排序
+        getByGeneral() {
+            this.chosedNav = 0;
+            // 拷贝原数据
+            this.renderGoods = this._.cloneDeep(this.goods);
         },
+        // 按销量排序
+        getBySales() {
+            this.chosedNav = 1;
+
+            // 根据销量进行排序
+            this.renderGoods.sort((a, b) => {
+                return b.sold_num - a.sold_num;
+            });
+        },
+        // 按价格排序
+        getBySort(isChange) {
+            this.chosedNav = 2;
+
+            if (isChange) {
+                // 切换升/降序模式，只在点击按钮时进行切换
+                this.isSortDown = !this.isSortDown;
+                this.isSortUp = !this.isSortDown;
+            }
+
+            // 价格升序
+            if (this.isSortUp) {
+                this.renderGoods.sort((a, b) => {
+                    return a.price - b.price;
+                });
+            }
+            // 价格降序
+            if (this.isSortDown) {
+                this.renderGoods.sort((a, b) => {
+                    return b.price - a.price;
+                });
+            }
+        },
+        // 筛选
+        toFilter() {
+            this.showPopup = true;
+        },
+        // 排序方式
+        sortGoods() {
+            switch (this.chosedNav) {
+                case 0: this.getByGeneral(); break;
+                case 1: this.getBySales(); break;
+                case 2: this.getBySort(); break;
+                default: break;
+            }
+        },
+        // 触底触发请求
+        // async onLoad() {
+        //     this.reqOption.page++;
+        //     // 请求商品列表
+        //     await this.getGoods();
+        //     // 关闭触底加载中，下一次加载就绪
+        //     this.listLoading = false;
+        // },
         // 点击分类信息，跳转到对应的分类商品列表
         searchBySort(scdSort) {
             this.$router.replace({ path: '/searchResult', query: { title: scdSort.title, classifyID: scdSort.id } });
