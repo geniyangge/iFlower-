@@ -26,7 +26,7 @@
 <script>
 export default {
     props: {
-        // 商品列表数组
+        // 商品列表数组 
         /* 
             数据类型
             [
