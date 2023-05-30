@@ -289,8 +289,10 @@ export default {
 
         // logo尺寸
         img.logo {
-            width: vw(75);
-            height: vw(30);
+            // width: vw(75);
+            // height: vw(30);
+            width: vw(125);
+            height: vw(50);
             object-fit: cover;
         }
 
