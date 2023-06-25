@@ -43,11 +43,18 @@ const routes = [
         name: 'Mine',
         component: () => import('@/views/iflower/mine.vue'),
       },
+      // {
+      // 触底加载
+      //   path: 'searchResult',
+      //   name: 'SearchResult',
+      //   component: () => import('@/views/iflower/searchResult.vue'),
+      // },
       {
+        // test虚拟列表
         path: 'searchResult',
         name: 'SearchResult',
-        component: () => import('@/views/iflower/searchResult.vue'),
-      }
+        component: () => import('@/views/test-virtual_list/index.vue'),
+      },
     ],
   },
   // login

@@ -1,5 +1,6 @@
 <template>
-    <!-- 商品搜索结果页 -->
+    <!-- 商品搜索结果页（虚拟列表法） -->
+    <!-- 触底加载法见 views/iflower/searchResult.vue -->
     <div id="searchResult">
         <!-- 标题栏 -->
         <header>
@@ -44,20 +45,17 @@
             <div class="loading" v-if="loading">
                 <van-loading type="spinner" color="#1989fa" />
             </div>
-            <div v-if="!loading">
+            <template v-if="!loading">
                 <!-- 商品列表 -->
                 <div class="production" v-if="renderGoods && renderGoods.length">
-                    <!-- 触底加载列表 -->
-                    <van-list :immediate-check="false" v-model="listLoading" :finished="listFinished" finished-text="没有更多了"
-                        @load="onLoad">
-                        <GoodsList :goodsList="renderGoods" round />
-                    </van-list>
+                    <VirtualList :listData="renderGoods" :itemHeight="246.5" :colNum="2" style="height: 100%;">
+                    </VirtualList>
                 </div>
                 <!-- 没有商品 -->
                 <div class="nothing" v-else>
                     <van-empty image="search" description="没有找到商品噢" />
                 </div>
-            </div>
+            </template>
 
             <!-- 筛选弹窗 -->
             <van-popup closeable close-icon-position="top-left" v-model="showPopup" position="right"
@@ -96,8 +94,8 @@
 </template>
 
 <script>
-// 引入商品列表组件
-import GoodsList from '@/components/goodsList.vue';
+// 引入虚拟列表组件
+import VirtualList from '@/components/virtual-list.vue';
 // 引入API
 import { getGoodsList } from '@/api/goods';
 import { saveAllSort } from '@/api/sort';
@@ -106,14 +104,12 @@ import { mapState } from 'vuex';
 
 export default {
     components: {
-        GoodsList,
+        VirtualList,
     },
     data() {
         return {
             // 是否加载中
             loading: true,
-            // 触底加载中
-            listLoading: false,
             // 显示筛选框弹窗？
             showPopup: false,
             /**
@@ -135,7 +131,7 @@ export default {
             // 请求商品列表配置项
             reqOption: {
                 page: '1',  // 页码
-                limit: '6', // 每页条数
+                limit: '200', // 每页条数
                 classify_id: this.$route.query.classifyID || '',   // 分类ID
                 name: this.$route.query.key || '', // 模糊搜索关键词
             },
@@ -147,19 +143,47 @@ export default {
     },
     computed: {
         ...mapState(['allSortList']),
-        // 触底加载是否结束
+        // 判断数据是否请求完
         listFinished() {
             return this.goods.length === this.count;
         },
     },
     methods: {
-        // 综合
+        // 请求筛选后的商品列表
+        async getGoods() {
+            // 请求商品列表
+            let [data, err] = await getGoodsList(this.reqOption);
+            if (err) return this.loading = false;
+            // 保存商品列表总数
+            this.count = data.result.count;
+            // console.log(this.count);
+            // 取出需要的数据
+            let tempList = data.result.rows.map(g => {
+                // 筛选出数据
+                let temp = {};
+                temp.id = g.id;
+                temp.name = g.name;
+                temp.img = g.s_goods_photos[0].path;
+                temp.price = g.price;
+                temp.sold_num = g.sold_num;
+
+                // 返回数据
+                return temp;
+            });
+            // 更新商品列表
+            this.goods.push(...tempList);
+            // 拷贝原数据 到渲染列表上
+            this.renderGoods = this._.cloneDeep(this.goods);
+            // 排序
+            this.sortGoods();
+        },
+        // 按综合排序
         getByGeneral() {
             this.chosedNav = 0;
             // 拷贝原数据
             this.renderGoods = this._.cloneDeep(this.goods);
         },
-        // 销量
+        // 按销量排序
         getBySales() {
             this.chosedNav = 1;
 
@@ -168,7 +192,7 @@ export default {
                 return b.sold_num - a.sold_num;
             });
         },
-        // 价格
+        // 按价格排序
         getBySort(isChange) {
             this.chosedNav = 2;
 
@@ -195,7 +219,7 @@ export default {
         toFilter() {
             this.showPopup = true;
         },
-        // 排序
+        // 排序方式
         sortGoods() {
             switch (this.chosedNav) {
                 case 0: this.getByGeneral(); break;
@@ -204,41 +228,14 @@ export default {
                 default: break;
             }
         },
-        // 请求筛选后的商品列表
-        async getGoods() {
-            // 请求商品列表
-            let [data, err] = await getGoodsList(this.reqOption);
-            if (err) return this.loading = false;
-            // 保存商品列表总数
-            this.count = data.result.count;
-            // 取出需要的数据
-            let tempList = data.result.rows.map(g => {
-                // 筛选出数据
-                let temp = {};
-                temp.id = g.id;
-                temp.name = g.name;
-                temp.img = g.s_goods_photos[0].path;
-                temp.price = g.price;
-                temp.sold_num = g.sold_num;
-
-                // 返回数据
-                return temp;
-            });
-            // 更新商品列表
-            this.goods.push(...tempList);
-            // 拷贝原数据 到渲染列表上
-            this.renderGoods = this._.cloneDeep(this.goods);
-            // 排序
-            this.sortGoods();
-        },
         // 触底触发请求
-        async onLoad() {
-            this.reqOption.page++;
-            // 请求商品列表
-            await this.getGoods();
-            // 关闭触底加载中，下一次加载就绪
-            this.listLoading = false;
-        },
+        // async onLoad() {
+        //     this.reqOption.page++;
+        //     // 请求商品列表
+        //     await this.getGoods();
+        //     // 关闭触底加载中，下一次加载就绪
+        //     this.listLoading = false;
+        // },
         // 点击分类信息，跳转到对应的分类商品列表
         searchBySort(scdSort) {
             this.$router.replace({ path: '/searchResult', query: { title: scdSort.title, classifyID: scdSort.id } });
@@ -371,6 +368,7 @@ export default {
 
         // 商品列表
         .production {
+            height: calc(100vh - vw(105));
             margin-top: vw(10);
         }
 

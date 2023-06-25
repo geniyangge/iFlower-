@@ -6,7 +6,10 @@
         <!-- 内容 -->
         <main>
             <!-- <transition name="van-fade" mode="out-in"> -->
-            <router-view />
+            <keep-alive :include="['Home', 'Sort']">
+                <router-view />
+            </keep-alive>
+
             <!-- </transition> -->
         </main>
 

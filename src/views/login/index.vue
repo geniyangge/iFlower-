@@ -78,8 +78,10 @@ export default {
                 margin-top: vw(15);
 
                 img {
-                    width: vw(138);
-                    height: vw(56);
+                    // width: vw(138);
+                    // height: vw(56);
+                    width: vw(165.6);
+                    height: vw(67.2);
                 }
             }
         }

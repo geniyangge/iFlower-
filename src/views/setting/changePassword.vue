@@ -59,7 +59,7 @@ export default {
     methods: {
         ...mapMutations(['removeUserInfo']),
         // 旧密码校验
-        checkOldPassword(){
+        checkOldPassword() {
             return md5(this.passwordFormData.oldPassword) === this.oldPassword;
         },
         // 输入确认密码校验

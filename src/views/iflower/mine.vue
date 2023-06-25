@@ -25,7 +25,7 @@
             </div>
             <!-- 登录/注册 -->
             <div class="welcome" v-else>
-                <h1>Hi,欢迎来到订花乐!</h1>
+                <h1>Hi,欢迎光临~</h1>
                 <van-button type="default" size="small" @click="login" round>登录/注册</van-button>
             </div>
 

@@ -6,7 +6,8 @@
             <div class="good" :class="{ round }" @click="$router.push({ name: 'Details', query: { id: good.id } })">
                 <!-- 商品图片 -->
                 <div class="goodImg">
-                    <van-image :src="good.img" :alt="good.name" />
+                    <van-image v-if="useVanImage" :src="good.img" :alt="good.name" />
+                    <img v-else :src="good.img" :alt="good.name">
                 </div>
                 <!-- 商品文字 -->
                 <div class="goodText">
@@ -47,6 +48,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        // 是否使用van-image组件展示图片
+        useVanImage: {
+            type: Boolean,
+            default: true,
+        }
     },
 };
 </script>
