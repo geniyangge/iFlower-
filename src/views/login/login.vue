@@ -41,8 +41,8 @@ export default {
         return {
             // 表单数据
             loginForm: {
-                phone: '13412341234',
-                password: '123456',
+                phone: '13412344321',
+                password: '729049487',
                 verifyCode: '',
             },
             // 请求获得的验证码
