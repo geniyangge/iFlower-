@@ -9,7 +9,7 @@ import myAxios from '@/utils/myAxios';
 import store from '@/store';
 
 // 项目ID
-const project_id = "337";
+import { project_id } from '@/config';
 
 /**
  * 添加商品到购物车

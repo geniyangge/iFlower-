@@ -12,7 +12,7 @@ import store from '@/store';
  * 根据轮播图组ID获取轮播图
  *  - get请求
  */
-export async function getSwiperList(id = '432') {
+export async function getSwiperList(id = '1') {
     return await myAxios({
         method: 'get',
         url: '/carouselgroup/' + id,
