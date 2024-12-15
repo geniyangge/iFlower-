@@ -17,13 +17,13 @@ module.exports = defineConfig({
           },
         },
       },
-    }
+    },
   },
   // 配置proxy代理服务，用于跨域请求
   devServer: {
     proxy: {
       '/': {
-        target: 'https://test-shopping-back.bluej.cn/api',
+        target: 'http://118.25.103.236:9000/api',
         changeOrigin: true,
         ws: false,
       },

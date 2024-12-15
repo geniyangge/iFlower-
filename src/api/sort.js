@@ -8,8 +8,8 @@ import myAxios from '@/utils/myAxios';
 // 引入vuex
 import store from '@/store';
 
-// 项目id
-const project_id = '337';
+// 项目ID
+import { project_id } from '@/config';
 
 /**
  * 获取所有商品分类信息
